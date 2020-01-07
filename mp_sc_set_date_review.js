@@ -50,8 +50,11 @@ function setDateReview() {
         var zee_record = nlapiLoadRecord('partner', zeeID);
 
         var zee_text = zee_record.getFieldValue('entitytitle');
-
-        // Set the review date and the invoiceable field for each and every job
+        /**
+         * SEARCH: AIC - Review - unInvoiced Jobs
+         * Set the review date and the invoiceable field for each and every job
+         */
+        
         var searchedJobs = nlapiLoadSearch('customrecord_job', 'customsearch_inv_review_jobs_uninv');
 
         var strFormula = "COALESCE({custrecord_job_service.custrecord_service_franchisee},{custrecord_job_group.custrecord_jobgroup_franchisee},{custrecord_job_franchisee},'')";

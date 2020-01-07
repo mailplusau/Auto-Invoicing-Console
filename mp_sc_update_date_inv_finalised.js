@@ -6,8 +6,8 @@
  *
  * Remarks: Schedule Script to Set the Date Invoiced Finalised Field          
  * 
- * @Last Modified by:   mailplusar
- * @Last Modified time: 2019-05-07 10:01:05
+ * @Last Modified by:   Ankith
+ * @Last Modified time: 2019-12-04 10:21:04
  *
  */
 
@@ -47,6 +47,10 @@ function updateDateInvFin() {
         nlapiLogExecution('EMERGENCY', 'Initial Parameters | ', 'End Date: ' + endDate);
     }
 
+    /**
+     * SEARCH: AIC - Review - unInvoiced Jobs
+     * Set the review date and the invoiceable field for each and every job
+     */
     var searchedAlljobs = nlapiLoadSearch('customrecord_job', 'customsearch_inv_review_jobs_uninv');
 
     var zee_record = nlapiLoadRecord('partner', partner);
