@@ -155,9 +155,10 @@ $(document).ready(function() {
     $(".modal_display").click(function() {
         var link = $(this).data("whatever");
         // console.log(link);
-        $('.modal .modal-header').html('<div class="form-group"><h4><label class="control-label" for="inputError1">Information!!</label></h4></div>');
+        $('.modal .modal-header').html('<div class="form-group"><h4><label class="control-label" for="inputError1">Information</label></h4></div>');
         $('.modal .modal-body').html("");
         $('.modal .modal-body').html(link);
+        $('.modal .modal-footer').html('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
         $('.modal').modal("show");
 
 
