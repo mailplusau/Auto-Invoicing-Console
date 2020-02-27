@@ -2122,7 +2122,7 @@ function services_main_page(request, response) {
 				//var searched_jobs_extras = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_summary');
 
 				//WS Edit: searched_jobs_extras does not seem like an appropriate variable name for the search, we are not searching for extras.
-				var search_unreviewed = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt');
+				var search_unreviewed = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2');
 				var zee_text = nlapiLoadRecord('partner', zee_id).getFieldValue('entitytitle');
 
 				var strFormula = "COALESCE({custrecord_job_service.custrecord_service_franchisee},{custrecord_job_group.custrecord_jobgroup_franchisee},{custrecord_job_franchisee},'')";
@@ -2209,7 +2209,6 @@ function fixedRateSection(inlineQty, total_package, old_invoiceable_qty, old_ser
 			total_discount_display = parseFloat(discount_job_price);
 			fixed_rate_value = parseFloat(discount_job_price);
 		} else {
-
 
 			//PERIOD TYPE IS PER DAY & PER VISIT
 			if (discount_job_single_line == 2) {
