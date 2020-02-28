@@ -218,7 +218,8 @@ function services_main_page(request, response) {
 
 		var packageResult = resultSet.getResults(0, 1);
 
-		// nlapiLogExecution('DEBUG', 'packageResult length', packageResult.length);
+		nlapiLogExecution('DEBUG', 'packageResult length', packageResult.length);
+		nlapiLogExecution('DEBUG', 'packageResult', packageResult);
 
 		//VARIABLES INITIALIZATION FOR THE PACKAGE SECTION
 		var completed_qty = 0;
@@ -1911,9 +1912,11 @@ function services_main_page(request, response) {
 
 		response.writePage(form);
 	} else {
+		var start_time = Date.now();
 
 		var customer = parseInt(request.getParameter('customer_id'));
 		var zee_id = parseInt(request.getParameter('zee_id'));
+		var zee_cust = parseInt(request.getParameter('zee_cust'));
 
 		var extra_service_string = request.getParameter('extra_service_string');
 		var extra_qty_string = request.getParameter('extra_qty_string');
@@ -2123,7 +2126,8 @@ function services_main_page(request, response) {
 
 				//WS Edit: searched_jobs_extras does not seem like an appropriate variable name for the search, we are not searching for extras.
 				var search_unreviewed = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2');
-				var zee_text = nlapiLoadRecord('partner', zee_id).getFieldValue('entitytitle');
+				//var zee_text = nlapiLoadRecord('partner', zee_id).getFieldValue('entitytitle');
+				var zee_text = nlapiLoadRecord('partner', zee_cust).getFieldValue('entitytitle');
 
 				var strFormula = "COALESCE({custrecord_job_service.custrecord_service_franchisee},{custrecord_job_group.custrecord_jobgroup_franchisee},{custrecord_job_franchisee},'')";
 
@@ -2151,24 +2155,28 @@ function services_main_page(request, response) {
 
 				if (result.length != 0 && review_button == "F") {
 					var internal_id = result[0].getValue('internalid', 'CUSTRECORD_JOB_CUSTOMER', 'group');
+					nlapiLogExecution('DEBUG', 'next customer', internal_id);
 
 					var params = new Array();
 					params['customer_id'] = internal_id;
 					params['start_date'] = request.getParameter('start_date');
 					params['end_date'] = request.getParameter('end_date');
-					params['zee'] = request.getParameter('zee_id');
+					params['zee'] = zee_cust;
 
 					nlapiSetRedirectURL('SUITELET', 'customscript_sl_services_main_page', 'customdeploy_sl_services_main_page', null, params);
 				} else {
 					var params = new Array();
 					params['start_date'] = request.getParameter('start_date');
 					params['end_date'] = request.getParameter('end_date');
+					params['zee'] = zee_cust;
 
 					nlapiSetRedirectURL('SUITELET', 'customscript_sl_summary_page', 'customdeploy_summary_page', null, params);
 				}
 				break;
 			}
 		}
+	var end_time = Date.now();
+	nlapiLogExecution('DEBUG', 'saving time', end_time - start_time);
 	}
 }
 

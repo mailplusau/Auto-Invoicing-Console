@@ -26,7 +26,7 @@ if (role == 1000) {
 
 var baseURL = 'https://1048144.app.netsuite.com';
 if (nlapiGetContext().getEnvironment() == "SANDBOX") {
-    baseURL = 'https://system.sandbox.netsuite.com';
+    baseURL = 'https://1048144-sb3.app.netsuite.com';
 }
 
 
@@ -185,8 +185,13 @@ function summary_page(request, response) {
         // var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2');
 
         var zeeName_firstletter = zeeName.substring(0, 1);
+        var zeeName_test = zeeName.substring(0, 4);
         nlapiLogExecution('DEBUG', 'zeeName_firstletter', zeeName_firstletter);
-        if (zeeName_firstletter == 'A' || zeeName_firstletter == 'B' || zeeName_firstletter == 'C' || zeeName_firstletter == 'D' || zeeName_firstletter == 'E' || zeeName_firstletter == 'F') {
+        nlapiLogExecution('DEBUG', 'zeeName_test', zeeName_test);
+
+        if (zeeName_test == 'TEST') {
+            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__7');
+        } else if (zeeName_firstletter == 'A' || zeeName_firstletter == 'B' || zeeName_firstletter == 'C' || zeeName_firstletter == 'D' || zeeName_firstletter == 'E' || zeeName_firstletter == 'F') {
             var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2_2');
         } else if (zeeName_firstletter == 'G' || zeeName_firstletter == 'H' || zeeName_firstletter == 'I' || zeeName_firstletter == 'J' || zeeName_firstletter == 'K' || zeeName_firstletter == 'L' || zeeName_firstletter == 'M') {
             var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__2');

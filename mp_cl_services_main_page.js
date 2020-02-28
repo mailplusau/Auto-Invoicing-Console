@@ -195,7 +195,7 @@ $(document).on('click', '.invoiceableqty_collapse', function(e) {
     $('.admin_fees_collpase').attr('colspan', 7);
 });
 
-/**
+/**sl_job_summary
  * [description] - On click of the '-', collapse all the App Qty and Invoiceable Qty fields
  */
 $(document).on('click', '.collapse_all', function(e) {

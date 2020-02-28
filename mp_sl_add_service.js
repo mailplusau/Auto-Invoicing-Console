@@ -179,7 +179,7 @@ function add_service(request, response) {
 
             searched_jobs_2.addFilters(newFilters_2);
 
-            var resultSet_2 = searched_jobs_2.runSearch();
+            var resserviceultSet_2 = searched_jobs_2.runSearch();
 
             var total_qty = 0;
             var extra_total_qty = 0;
