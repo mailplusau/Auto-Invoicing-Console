@@ -34,7 +34,7 @@ function AddStyle(cssLink, pos) {
 
 $(window).load(function() {
     // Animate loader off screen
-    $(".se-pre-con").fadeOut("slow");
+    $(".se-pre-con").fadeOut("slow");;
 });
 
 /**
@@ -68,7 +68,6 @@ function checkMonth() {
 $(document).on("change", ".zee_dropdown", function(e) {
 
     var zee = $(this).val();
-    console.log('zee', zee);
     var valueMonth = checkMonth();
 
     dates = service_start_end_date(valueMonth);
@@ -76,12 +75,14 @@ $(document).on("change", ".zee_dropdown", function(e) {
     nlapiSetFieldValue('start_date', dates[0]);
     nlapiSetFieldValue('end_date', dates[1]);
 
-    var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1&sorts[customername]=1";
 
+    var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1&compid=1048144&sorts[customername]=1";
+    if (nlapiGetContext().getEnvironment() == "SANDBOX") {
+        var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1&sorts[customername]=1";
+    }
     url += "&start_date=" + dates[0] + "&end_date=" + dates[1] + "&zee=" + zee + "";
 
     window.location.href = url;
-    console.log('window loading');
 });
 
 
@@ -90,11 +91,7 @@ $(document).on("change", ".zee_dropdown", function(e) {
  */
 function clientPageInit(type) {
 
-    if (nlapiGetContext().getEnvironment() == "SANDBOX") {
-        AddStyle('https://1048144-sb3.app.netsuite.com/core/media/media.nl?id=1988776&h=58352d0b4544df20b40f&_xt=.css', 'head');
-    } else {
-        AddStyle('https://1048144.app.netsuite.com/core/media/media.nl?id=1988776&c=1048144&h=58352d0b4544df20b40f&_xt=.css', 'head');
-    }
+    AddStyle('https://1048144.app.netsuite.com/core/media/media.nl?id=1988776&c=1048144&h=58352d0b4544df20b40f&_xt=.css', 'head');
 
     // addStyle('https://1048144.app.netsuite.com/core/media/media.nl?id=1988776&c=1048144&h=58352d0b4544df20b40f&mv=j11m86u8&_xt=.css', 'head');
 
@@ -189,7 +186,6 @@ $(document).on("change", ".invoicing_month", function(e) {
     var valueMonth = checkMonth();
     var zee = nlapiGetFieldValue('zee');
 
-
     if (valueMonth != false) {
 
         /**
@@ -202,9 +198,12 @@ $(document).on("change", ".invoicing_month", function(e) {
         nlapiSetFieldValue('start_date', dates[0]);
         nlapiSetFieldValue('end_date', dates[1]);
 
-        var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1&sorts[customername]=1";
+        var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1&compid=1048144&sorts[customername]=1";
+        if (nlapiGetContext().getEnvironment() == "SANDBOX") {
+            var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1&sorts[customername]=1";
+        }
 
-        url += "&start_date=" + dates[0] + "&end_date=" + dates[1] + "&zee=" + zee + "";
+        url += "&start_date=" + dates[0] + "&end_date=" + dates[1] + "&zee=" + parseInt(zee);
 
         window.location.href = url;
     } else {
@@ -229,8 +228,7 @@ function onclickContinueReview(internalID, locked, sc_ID) {
     } else {
         if (isNullorEmpty(internalID)) {
             // var searchedJobsExtras = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_summary');
-            //var searchedJobsExtras = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2');
-            var searchedJobsExtras = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2_2');
+            var searchedJobsExtras = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt');
 
             var filPo = [];
             filPo[filPo.length] = new nlobjSearchFilter('custrecord_job_date_inv_finalised', null, 'isempty');

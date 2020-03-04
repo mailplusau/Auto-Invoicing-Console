@@ -49,7 +49,7 @@ function service_start_end_date(date_finalised) {
 
 var start_date;
 var end_date;
-var zeeName = '';
+var zee_name;
 
 /**
  * [summary_page description] - To display the list of customers for a franchisee for whom the Invoice Review needs to be done.
@@ -60,7 +60,7 @@ function summary_page(request, response) {
 
     if (request.getMethod() === "GET") {
         var start_time = Date.now();
-        nlapiLogExecution('DEBUG', 'start_time', start_time);
+
         var form = nlapiCreateForm('Auto Invoicing Console: Summary Page');
 
         var inlinehtml2 = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"><script src="//code.jquery.com/jquery-1.11.0.min.js"></script><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"><link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"><script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><link rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2060796&c=1048144&h=9ee6accfd476c9cae718&_xt=.css"/><script src="https://1048144.app.netsuite.com/core/media/media.nl?id=2060797&c=1048144&h=ef2cda20731d146b5e98&_xt=.js"></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&c=1048144&h=a0ef6ac4e28f91203dfe&_xt=.css">';
@@ -115,7 +115,8 @@ function summary_page(request, response) {
             inlinehtml2 += '<input type="month" class="form-control invoicing_month" value="' + startDate + '" required="required" />';
         }
 
-        if (zee == 6 || zee == 425904) { //TEST or TEST - AR
+        nlapiLogExecution('DEBUG', 'zee', zee);
+        if (zee == 6 || zee == 425904) {
             inlinehtml2 += '<select class="form-control zee_dropdown" >';
 
             var searched_zee = nlapiLoadSearch('partner', 'customsearch_job_inv_process_zee');
@@ -125,7 +126,6 @@ function summary_page(request, response) {
             var count_zee = 0;
 
             var zee_id;
-            var zee_name;
 
             inlinehtml2 += '<option value=""></option>'
 
@@ -136,7 +136,6 @@ function summary_page(request, response) {
 
                 if (request.getParameter('zee') == zee_id) {
                     inlinehtml2 += '<option value="' + zee_id + '" selected="selected">' + zee_name + '</option>';
-                    zeeName = zee_name;
                 } else {
                     inlinehtml2 += '<option value="' + zee_id + '">' + zee_name + '</option>';
                 }
@@ -176,42 +175,59 @@ function summary_page(request, response) {
             zee = request.getParameter('zee');
         }
 
+        var zee_record = nlapiLoadRecord('partner', zee);
 
+        var zee_text = zee_record.getFieldValue('entitytitle');
+        var zeeName = zee_record.getFieldValue('entityid');
         // inlinehtml2 += '</div>';
 
         var inlineQty = '<div><style>table#stockcount {font-size:12px; font-weight:bold; text-align:center; border-color: #24385b;} </style><table border="0" cellpadding="10" id="stockcount" cellspacing="0" class="table table-responsive table-striped"><thead style="color: white;background-color: #607799;"><tr><td style="text-align:left;"><b>ID</b></td><td style="text-align:left;" class="col-sm-3"><b>CUSTOMER NAME</b></td><td><b>ACTION</b></td><td style="text-align:right;" class="col-sm-2"><b>EXPECTED INVOICE</b></td><td class="col-sm-2" style="text-align:right;"><b>EXPECTED DISTRIBUTION</b></td><td><b>LINK TO INVOICE</b></td></tr></thead><tbody>';
 
         // var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_summary');
-        // var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2');
+        //var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt');
 
         var zeeName_firstletter = zeeName.substring(0, 1);
         var zeeName_test = zeeName.substring(0, 4);
         nlapiLogExecution('DEBUG', 'zeeName_firstletter', zeeName_firstletter);
         nlapiLogExecution('DEBUG', 'zeeName_test', zeeName_test);
 
-        if (zeeName_test == 'TEST') {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__7');
-        } else if (zeeName_firstletter == 'A' || zeeName_firstletter == 'B' || zeeName_firstletter == 'C' || zeeName_firstletter == 'D' || zeeName_firstletter == 'E' || zeeName_firstletter == 'F') {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2_2');
-        } else if (zeeName_firstletter == 'G' || zeeName_firstletter == 'H' || zeeName_firstletter == 'I' || zeeName_firstletter == 'J' || zeeName_firstletter == 'K' || zeeName_firstletter == 'L' || zeeName_firstletter == 'M') {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__2');
-        } else if (zeeName_firstletter == 'N' || zeeName_firstletter == 'O' || zeeName_firstletter == 'P' || zeeName_firstletter == 'Q' || zeeName_firstletter == 'R') {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__5');
-        } else if (zeeName_firstletter == 'S' || zeeName_firstletter == 'T' || zeeName_firstletter == 'U' || zeeName_firstletter == 'V' || zeeName_firstletter == 'W' || zeeName_firstletter == 'X' || zeeName_firstletter == 'Y' || zeeName_firstletter == 'Z') {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__6');
-            /*        } else if (zeeName_firstletter == 'M') {
-                        var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__3');
-                    } else if (zeeName_firstletter == 'N') {
-                        var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__4');*/
-        } else {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2');
 
+        if (nlapiGetContext().getEnvironment() == "SANDBOX") { //THE SEARCHES IDS ARE NOT THE SAME ON SANDBOX AND PRODUCTION
+            if (zeeName_test == 'TEST') {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__7');
+            } else if (zeeName_firstletter == 'A' || zeeName_firstletter == 'B' || zeeName_firstletter == 'C' || zeeName_firstletter == 'D' || zeeName_firstletter == 'E' || zeeName_firstletter == 'F') {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2_2');
+            } else if (zeeName_firstletter == 'G' || zeeName_firstletter == 'H' || zeeName_firstletter == 'I' || zeeName_firstletter == 'J' || zeeName_firstletter == 'K' || zeeName_firstletter == 'L' || zeeName_firstletter == 'M') {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__2');
+            } else if (zeeName_firstletter == 'N' || zeeName_firstletter == 'O' || zeeName_firstletter == 'P' || zeeName_firstletter == 'Q' || zeeName_firstletter == 'R') {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__5');
+            } else if (zeeName_firstletter == 'S' || zeeName_firstletter == 'T' || zeeName_firstletter == 'U' || zeeName_firstletter == 'V' || zeeName_firstletter == 'W' || zeeName_firstletter == 'X' || zeeName_firstletter == 'Y' || zeeName_firstletter == 'Z') {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__6');
+            } else {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt');
+            }
+        } else {
+            if (zeeName_test == 'TEST') {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2');
+            } else if (zeeName_firstletter == 'A' || zeeName_firstletter == 'B' || zeeName_firstletter == 'C' || zeeName_firstletter == 'D' || zeeName_firstletter == 'E' || zeeName_firstletter == 'F') {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3');
+            } else if (zeeName_firstletter == 'G' || zeeName_firstletter == 'H' || zeeName_firstletter == 'I' || zeeName_firstletter == 'J' || zeeName_firstletter == 'K' || zeeName_firstletter == 'L' || zeeName_firstletter == 'M') {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3_2');
+            } else if (zeeName_firstletter == 'N' || zeeName_firstletter == 'O' || zeeName_firstletter == 'P' || zeeName_firstletter == 'Q') {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3__2');
+            } else if (zeeName_firstletter == 'R') {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_4');
+            } else if (zeeName_firstletter == 'S' || zeeName_firstletter == 'T' || zeeName_firstletter == 'U' || zeeName_firstletter == 'V' || zeeName_firstletter == 'W' || zeeName_firstletter == 'X' || zeeName_firstletter == 'Y' || zeeName_firstletter == 'Z') {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3__3');
+            } else {
+                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt');
+            }
         }
 
 
-        var zee_record = nlapiLoadRecord('partner', zee);
+        //var zee_record = nlapiLoadRecord('partner', zee);
 
-        var zee_text = zee_record.getFieldValue('entitytitle');
+        //var zee_text = zee_record.getFieldValue('entitytitle');
 
         var strFormula = "COALESCE({custrecord_job_service.custrecord_service_franchisee},{custrecord_job_group.custrecord_jobgroup_franchisee},{custrecord_job_franchisee},'')";
 
@@ -293,8 +309,6 @@ function summary_page(request, response) {
 
         var invoiced_count = 0;
 
-
-
         /**
          * Goes through the list of jobs for the selected month. Search: Job - Invoicing Review - Summary.
          * @function resultSet
@@ -315,8 +329,8 @@ function summary_page(request, response) {
             var invoiceable = searchResult.getText('custrecord_job_invoiceable', null, 'group');
             var jobGroupStatus = searchResult.getValue('custrecord_jobgroup_status', 'CUSTRECORD_JOB_GROUP', 'group');
             var inv_if_incomplete = searchResult.getValue("custrecord_service_package_inv_incomplet", "CUSTRECORD_JOB_SERVICE_PACKAGE", "GROUP");
-            /*          var dateInvFinalised = searchResult.getValue('custrecord_job_date_inv_finalised', null, 'group');
-                        var dateInvoiced = searchResult.getValue('custrecord_job_date_invoiced', null, 'group');*/
+            var dateInvFinalised = searchResult.getValue('custrecord_job_date_inv_finalised', null, 'group');
+            var dateInvoiced = searchResult.getValue('custrecord_job_date_invoiced', null, 'group');
             //No. of Jobs that does not have Date Reviewed
             var countJobsNoDateReviewed = searchResult.getValue('formulanumeric', null, 'sum');
             //Total No. of Jobs
@@ -1185,8 +1199,7 @@ function summary_page(request, response) {
 
         response.writePage(form);
         var end_time = Date.now();
-        nlapiLogExecution('DEBUG', 'function end', end_time);
-        nlapiLogExecution('DEBUG', 'time to load', end_time - start_time);
+        nlapiLogExecution('DEBUG', 'loading_time', end_time - start_time);
     } else {
 
         var partner = request.getParameter('partner');
@@ -1271,7 +1284,6 @@ function finalise_date() {
     var year = date.getFullYear();
 
     var lastDay = new Date(year, (month + 1), 0);
-    nlapiLogExecution('DEBUG', 'lastDay', lastDay);
 
 
     if (lastDay.getDay() == 0) {

@@ -195,7 +195,7 @@ $(document).on('click', '.invoiceableqty_collapse', function(e) {
     $('.admin_fees_collpase').attr('colspan', 7);
 });
 
-/**sl_job_summary
+/**
  * [description] - On click of the '-', collapse all the App Qty and Invoiceable Qty fields
  */
 $(document).on('click', '.collapse_all', function(e) {
@@ -698,7 +698,7 @@ function onclick_StatusIncomplete(internal_id, service_rate, service_id, job_gro
 //ON CLICK OF THE BACK TO SUMMARY BUTTON
 function onclick_summaryPage() {
 
-    var upload_url = baseURL + nlapiResolveURL('SUITELET', 'customscript_sl_summary_page', 'customdeploy_summary_page') + '&start_date=' + nlapiGetFieldValue('start_date') + '&end_date=' + nlapiGetFieldValue('end_date') + '&zee=' + nlapiGetFieldValue('zee_cust');
+    var upload_url = baseURL + nlapiResolveURL('SUITELET', 'customscript_sl_summary_page', 'customdeploy_summary_page') + '&start_date=' + nlapiGetFieldValue('start_date') + '&end_date=' + nlapiGetFieldValue('end_date') + '&zee=' + nlapiGetFieldValue('zee_id');
     window.open(upload_url, "_self", "height=750,width=650,modal=yes,alwaysRaised=yes");
 }
 
@@ -760,17 +760,6 @@ function updateServiceAmount(rate, qty) {
 
 }
 
-$(document).ready(function() {
-    $(".modal_display").click(function() {
-        var link = $(this).data("whatever");
-        $('.modal .modal-header').html('<div class="form-group"><h4><label class="control-label" for="inputError1">Information!!</label></h4></div>');
-        $('.modal .modal-body').html("");
-        $('.modal .modal-body').html(link);
-        $('.modal').modal("show");
-
-
-    });
-});
 
 /**
  * [description] - To show the Invoice Preview modal
@@ -1098,13 +1087,7 @@ $(document).on('click', '.preview_row', function(event) {
     if ((global_locked == 'yes' || result == false) && role == 1000 && zee != 6 && zee != 425904) {
         footer_html = '<span class="col-sm-10"><b>"Create Custom Invoice"</b> functionality will only be available on or after the last day of the month</span><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
     } else {
-        if (nlapiGetContext().getEnvironment() == "SANDBOX") {
-            footer_html = '<a href="https://1048144-sb3.app.netsuite.com/app/accounting/transactions/custinvc.nl?&cf=116&entity=' + global_customer + '&itemids=' + invoice_line_items.toString() + '&qty=' + invoice_line_qty.toString() + '&rate=' + invoice_line_rate.toString() + '&gst=' + invoice_line_gst.toString() + '&next_customer=' + next_customer + '&start_date=' + nlapiGetFieldValue('start_date') + '&end_date=' + nlapiGetFieldValue('end_date') + '" class="btn btn-primary" value="">Create Custom Invoice</a><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
-        } else {
-            footer_html = '<a href="https://1048144.app.netsuite.com/app/accounting/transactions/custinvc.nl?compid=1048144&cf=116&entity=' + global_customer + '&itemids=' + invoice_line_items.toString() + '&qty=' + invoice_line_qty.toString() + '&rate=' + invoice_line_rate.toString() + '&gst=' + invoice_line_gst.toString() + '&next_customer=' + next_customer + '&start_date=' + nlapiGetFieldValue('start_date') + '&end_date=' + nlapiGetFieldValue('end_date') + '" class="btn btn-primary" value="">Create Custom Invoice</a><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
-        }
-
-
+        footer_html = '<a href="https://1048144.app.netsuite.com/app/accounting/transactions/custinvc.nl?compid=1048144&cf=116&entity=' + global_customer + '&itemids=' + invoice_line_items.toString() + '&qty=' + invoice_line_qty.toString() + '&rate=' + invoice_line_rate.toString() + '&gst=' + invoice_line_gst.toString() + '&next_customer=' + next_customer + '&start_date=' + nlapiGetFieldValue('start_date') + '&end_date=' + nlapiGetFieldValue('end_date') + '" class="btn btn-primary" value="">Create Custom Invoice</a><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
     }
 
     $('.modal .modal-header').html('<div class="form-group"><h4><label class="control-label" for="inputError1">Invoice Preview</label></h4></div>');
@@ -1281,8 +1264,8 @@ function saveRecord() {
 
     //WS Edit: filterExpression unsets existing filter
     // var filterExpression = [
-    // 	["custrecord_customer", "anyof", customer_id], // customer id
-    // 	"AND", ["custrecord_franchisee", "is", franchisee] // partner id
+    //  ["custrecord_customer", "anyof", customer_id], // customer id
+    //  "AND", ["custrecord_franchisee", "is", franchisee] // partner id
     // ];
     // commReg_search.setFilterExpression(filterExpression);
 
