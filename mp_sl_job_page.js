@@ -71,7 +71,7 @@ function job_page(request, response) {
         staus = request.getParameter('status');
         var locked = request.getParameter('locked');
         var scID = request.getParameter('sc');
-        zee = parseInt(request.getParameter('zee'));
+        zee = request.getParameter('zee');
 
         nlapiLogExecution('DEBUG', 'price', price);
 

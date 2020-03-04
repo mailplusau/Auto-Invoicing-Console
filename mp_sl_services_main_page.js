@@ -1933,7 +1933,7 @@ function services_main_page(request, response) {
     } else {
 
         var customer = parseInt(request.getParameter('customer_id'));
-        var zee_id = parseInt(request.getParameter('zee_id')); //User/Role Zee
+        var zee_id = request.getParameter('zee_id'); //User/Role Zee
 
         var extra_service_string = request.getParameter('extra_service_string');
         var extra_qty_string = request.getParameter('extra_qty_string');
