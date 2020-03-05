@@ -47,6 +47,7 @@ function serviceTypeLoop(searchResult, option) {
 function add_service(request, response) {
 
     if (request.getMethod() == "GET") {
+        zee = request.getParameter('zee');
 
         var customer_record = nlapiLoadRecord('customer', request.getParameter('custid'));
 
@@ -74,6 +75,7 @@ function add_service(request, response) {
         form.addField('extra_qty_string', 'text', 'extra_qty_string').setDisplayType('hidden');
         form.addField('extra_rate_string', 'text', 'extra_rate_string').setDisplayType('hidden');
         form.addField('delete_job_id_string', 'text', 'delete_job_id_string').setDisplayType('hidden');
+        nlapiLogExecution('DEBUG', 'zee', zee);
         form.addField('zee_id', 'text', 'delete_job_id_string').setDisplayType('hidden').setDefaultValue(zee);
 
         form.addField('new_jobs_service_id_string', 'text', 'new_jobs_service_id_string').setDisplayType('hidden');

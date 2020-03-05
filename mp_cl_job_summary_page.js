@@ -13,7 +13,7 @@
 
 var baseURL = 'https://1048144.app.netsuite.com';
 if (nlapiGetContext().getEnvironment() == "SANDBOX") {
-    baseURL = 'https://system.sandbox.netsuite.com';
+    baseURL = 'https://1048144-sb3.app.netsuite.com';
 }
 
 var dates;
@@ -75,8 +75,11 @@ $(document).on("change", ".zee_dropdown", function(e) {
     nlapiSetFieldValue('start_date', dates[0]);
     nlapiSetFieldValue('end_date', dates[1]);
 
-    var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1&compid=1048144&sorts[customername]=1";
 
+    var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1&compid=1048144&sorts[customername]=1";
+    if (nlapiGetContext().getEnvironment() == "SANDBOX") {
+        var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1&sorts[customername]=1";
+    }
     url += "&start_date=" + dates[0] + "&end_date=" + dates[1] + "&zee=" + zee + "";
 
     window.location.href = url;
@@ -181,6 +184,7 @@ $(document).on('click', '.instruction_button', function(e) {
 $(document).on("change", ".invoicing_month", function(e) {
 
     var valueMonth = checkMonth();
+    var zee = parseInt(nlapiGetFieldValue('zee'));
 
     if (valueMonth != false) {
 
@@ -195,8 +199,11 @@ $(document).on("change", ".invoicing_month", function(e) {
         nlapiSetFieldValue('end_date', dates[1]);
 
         var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1&compid=1048144&sorts[customername]=1";
+        if (nlapiGetContext().getEnvironment() == "SANDBOX") {
+            var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1&sorts[customername]=1";
+        }
 
-        url += "&start_date=" + dates[0] + "&end_date=" + dates[1] + "";
+        url += "&start_date=" + dates[0] + "&end_date=" + dates[1] + "&zee=" + zee;
 
         window.location.href = url;
     } else {
@@ -243,7 +250,7 @@ function onclickContinueReview(internalID, locked, sc_ID) {
         }
     }
 
-    var uploadURL = baseURL + nlapiResolveURL('SUITELET', 'customscript_sl_services_main_page', 'customdeploy_sl_services_main_page') + '&customer_id=' + internalID + '&start_date=' + nlapiGetFieldValue('start_date') + '&end_date=' + nlapiGetFieldValue('end_date') + '&locked=' + locked + '&zee=' + nlapiGetFieldValue('zee') + '&sc=' + sc_ID;
+    var uploadURL = baseURL + nlapiResolveURL('SUITELET', 'customscript_sl_services_main_page', 'customdeploy_sl_services_main_page') + '&customer_id=' + internalID + '&start_date=' + nlapiGetFieldValue('start_date') + '&end_date=' + nlapiGetFieldValue('end_date') + '&locked=' + locked + '&zee=' + parseInt(nlapiGetFieldValue('zee')) + '&sc=' + sc_ID;
     window.open(uploadURL, "_self", "height=750,width=650,modal=yes,alwaysRaised=yes");
 }
 
