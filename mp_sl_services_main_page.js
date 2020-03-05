@@ -2183,6 +2183,7 @@ function services_main_page(request, response) {
                     var params = new Array();
                     params['start_date'] = request.getParameter('start_date');
                     params['end_date'] = request.getParameter('end_date');
+                    params['zee'] = request.getParameter('zee_id');
 
                     nlapiSetRedirectURL('SUITELET', 'customscript_sl_summary_page', 'customdeploy_summary_page', null, params);
                 }

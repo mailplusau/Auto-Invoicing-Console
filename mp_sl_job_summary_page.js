@@ -540,10 +540,10 @@ function summary_page(request, response) {
                         }
                     } else if (reviewed == true) {
                         if (isNullorEmpty(old_sc_ID)) {
-                            inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_customer_id + '" target="_blank"><p style="text-align:left;">' + old_ID + '</p></a></td><td><p style="text-align:left;">' + old_customer_name + '</p></td><td><input type="button" id="invoice_customer" value="REVIEWED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\', ' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
+                            inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_customer_id + '" target="_blank"><p style="text-align:left;">' + old_ID + '</p></a></td><td><p style="text-align:left;">' + old_customer_name + '</p></td><td><input type="button" id="invoice_customer" value="FINALISED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\', ' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
 
                         } else {
-                            inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_sc_ID + '" target="_blank"><p style="text-align:left;">' + old_sc_entity_id + '</p></a></td><td><p style="text-align:left;">' + old_sc_company_name + '</p></td><td><input type="button" id="invoice_customer" value="REVIEWED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\',' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
+                            inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_sc_ID + '" target="_blank"><p style="text-align:left;">' + old_sc_entity_id + '</p></a></td><td><p style="text-align:left;">' + old_sc_company_name + '</p></td><td><input type="button" id="invoice_customer" value="FINALISED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\',' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
                         }
 
 
@@ -715,10 +715,10 @@ function summary_page(request, response) {
                             }
                         } else if (reviewed == true) {
                             if (isNullorEmpty(old_sc_ID)) {
-                                inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_customer_id + '" target="_blank"><p style="text-align:left;">' + old_ID + '</p></a></td><td><p style="text-align:left;">' + old_customer_name + '</p></td><td><input type="button" id="invoice_customer" value="REVIEWED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\', ' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
+                                inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_customer_id + '" target="_blank"><p style="text-align:left;">' + old_ID + '</p></a></td><td><p style="text-align:left;">' + old_customer_name + '</p></td><td><input type="button" id="invoice_customer" value="FINALISED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\', ' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
 
                             } else {
-                                inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_sc_ID + '" target="_blank"><p style="text-align:left;">' + old_sc_entity_id + '</p></a></td><td><p style="text-align:left;">' + old_sc_company_name + '</p></td><td><input type="button" id="invoice_customer" value="REVIEWED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\', ' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
+                                inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_sc_ID + '" target="_blank"><p style="text-align:left;">' + old_sc_entity_id + '</p></a></td><td><p style="text-align:left;">' + old_sc_company_name + '</p></td><td><input type="button" id="invoice_customer" value="FINALISED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\', ' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
                             }
 
 
@@ -1090,10 +1090,10 @@ function summary_page(request, response) {
                 }
             } else if (reviewed == true) {
                 if (isNullorEmpty(old_sc_ID)) {
-                    inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_customer_id + '" target="_blank"><p style="text-align:left;">' + old_ID + '</p></a></td><td><p style="text-align:left;">' + old_customer_name + '</p></td><td><input type="button" id="invoice_customer" value="REVIEWED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\', ' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
+                    inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_customer_id + '" target="_blank"><p style="text-align:left;">' + old_ID + '</p></a></td><td><p style="text-align:left;">' + old_customer_name + '</p></td><td><input type="button" id="invoice_customer" value="FINALISED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\', ' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
 
                 } else {
-                    inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_sc_ID + '" target="_blank"><p style="text-align:left;">' + old_sc_entity_id + '</p></a></td><td><p style="text-align:left;">' + old_sc_company_name + '</p></td><td><input type="button" id="invoice_customer" value="REVIEWED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\', ' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
+                    inlineQty += '<tr><td><a href="' + baseURL + '/app/common/entity/custjob.nl?id=' + old_sc_ID + '" target="_blank"><p style="text-align:left;">' + old_sc_entity_id + '</p></a></td><td><p style="text-align:left;">' + old_sc_company_name + '</p></td><td><input type="button" id="invoice_customer" value="FINALISED" onclick="onclickContinueReview(' + old_customer_id + ',\'yes\', ' + old_sc_ID + ')" class="form-control btn btn-info invoice_customer"> </td>';
                 }
 
 
