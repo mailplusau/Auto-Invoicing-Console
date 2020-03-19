@@ -1130,6 +1130,7 @@ function summary_page(request, response) {
 
         inlinehtml2 += '<br/><label>Total Exp Invoice Amount</label><div class="input-group"><span class="input-group-addon">$</span><input type="number" class="form-control total_monthly_invoice" value="' + (total_monthly_invoice).toFixed(2) + '" readonly /></div>';
         inlinehtml2 += '<label>Total Exp Distribution Amount</label><div class="input-group"><span class="input-group-addon">$</span><input type="number" class="form-control total_monthly_comm" value="' + (total_monthly_comm).toFixed(2) + '" readonly /></div>';
+        inlinehtml2 += '<div><button type="button" id="dailyrevenue" value="DAILY REVENUE" class="form-control btn btn-danger" style="margin-top: 10px">Daily Revenue</button></div>';
 
         var edit_progress = 0.0;
         var remaining_progress = 0.0;
