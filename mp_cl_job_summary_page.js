@@ -220,9 +220,9 @@ $(document).on('click', '#dailyrevenue', function(){
     var zee = parseInt(nlapiGetFieldValue('zee'));
 
     if (valueMonth != false) {
-        var url = baseURL + "/app/site/hosting/scriptlet.nl?script=928&deploy=1";
+        var url = baseURL + "/app/site/hosting/scriptlet.nl?script=936&deploy=1";
         if (nlapiGetContext().getEnvironment() == "SANDBOX") {
-            var url = baseURL + "/app/site/hosting/scriptlet.nl?script=928&deploy=1";
+            var url = baseURL + "/app/site/hosting/scriptlet.nl?script=936&deploy=1";
         }
 
         url += "&start_date=" + dates[0] + "&end_date=" + dates[1] + "&month=" + valueMonth + "&zee=" + zee;
