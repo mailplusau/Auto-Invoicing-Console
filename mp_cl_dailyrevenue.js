@@ -7,27 +7,32 @@ function pageInit() {
     //var mainTable = document.getElementsByClassName("uir-outside-fields-table");
     var mainTable2 = document.getElementsByClassName("uir-inline-tag");
 
+    var operator_id_string = nlapiGetFieldValue('operator_string');
+    var operator_id_array = operator_id_string.split(',');
+    console.log('operator_id_array', operator_id_array);
+
     for (var i = 0; i < mainTable2.length; i++) {
         mainTable2[i].style.position = "absolute";
         mainTable2[i].style.left = "10%";
+        mainTable2[i].style.right = "10%";
         //mainTable2[i].style.width = "80%";
         mainTable2[i].style.top = "250px";
+        if (operator_id_array.length == 1) {
+            mainTable2[i].style.left = "30%";
+            mainTable2[i].style.right = "30%";
+        }
     }
 
-    var operator_string = nlapiGetFieldValue('operator_string');
-    var operator_array = operator_string.split(',');
-    console.log('operator_array', operator_array);
-    console.log('operator_string', operator_string);
-    for (i = 0; i < operator_array.length; i++){
-        var total = getTotal(operator_array[i]);
+
+    for (i = 0; i < operator_id_array.length; i++) {
+        var total = getTotal(operator_id_array[i]);
         console.log('total', total);
-        $('.total_service_count_' + operator_array[i] + '').text(total[0]);
-        console.log($('.total_service_count_' + operator_array[i] + ''));
-        $('.total_revenue_' + operator_array[i] + '').text(total[1]);
-        $('.total_distribution_' + operator_array[i] + '').text(total[2]);
+        $('.total_service_count_' + operator_id_array[i] + '').text(total[0]);
+        $('.total_extra_count_' + operator_id_array[i] + '').text(total[1]);
+        $('.total_revenue_' + operator_id_array[i] + '').val(total[2]);
+        $('.total_distribution_' + operator_id_array[i] + '').val(total[3]);
     }
 
-    
 }
 
 function onclick_back() {
@@ -46,12 +51,17 @@ function onclick_back() {
 
 function getTotal(operator_name) {
     var service_count_total = 0;
+    var extra_count_total = 0;
     var revenue_total = 0.00;
     var distribution_total = 0.00;
     console.log('$(.service_count_+ operator_name +)', $('.service_count_' + operator_name + ''));
     $('.service_count_' + operator_name + '').each(function() {
         console.log('$(this).attr(value)', $(this).attr('value'));
         service_count_total += parseFloat($(this).attr('value'));
+    });
+    $('.extra_count_' + operator_name + '').each(function() {
+        console.log('$(this).attr(value)', $(this).attr('value'));
+        extra_count_total += parseFloat($(this).attr('value'));
     });
     $('.revenue_' + operator_name + '').each(function() {
         console.log('$(this).attr(value)', $(this).attr('value'));
@@ -61,5 +71,5 @@ function getTotal(operator_name) {
         console.log('$(this).attr(value)', $(this).attr('value'));
         distribution_total += parseFloat($(this).attr('value'));
     });
-    return [parseInt(service_count_total), revenue_total.toFixed(2), distribution_total.toFixed(2)]
+    return [parseInt(service_count_total), parseInt(extra_count_total), revenue_total.toFixed(2), distribution_total.toFixed(2)]
 }
