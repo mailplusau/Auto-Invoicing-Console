@@ -225,7 +225,7 @@ $(document).on('click', '#dailyrevenue', function(){
             var url = baseURL + "/app/site/hosting/scriptlet.nl?script=936&deploy=1";
         }
 
-        url += "&start_date=" + dates[0] + "&end_date=" + dates[1] + "&month=" + valueMonth + "&zee=" + zee;
+        url += "&start_date=" + dates[0] + "&end_date=" + dates[1] + "&zee=" + zee;
         window.location.href = url;
     } else {
         alert('Please select the invocing period');

@@ -3,6 +3,13 @@ if (nlapiGetContext().getEnvironment() == "SANDBOX") {
     baseURL = 'https://1048144-sb3.app.netsuite.com';
 }
 
+$(document).ready(function() {
+    $('#daily_revenue').DataTable({
+        "scrollX": true
+    })
+});
+
+
 function pageInit() {
     //var mainTable = document.getElementsByClassName("uir-outside-fields-table");
     var mainTable2 = document.getElementsByClassName("uir-inline-tag");
@@ -13,13 +20,13 @@ function pageInit() {
 
     for (var i = 0; i < mainTable2.length; i++) {
         mainTable2[i].style.position = "absolute";
-        mainTable2[i].style.left = "10%";
-        mainTable2[i].style.right = "10%";
-        //mainTable2[i].style.width = "80%";
+        //mainTable2[i].style.left = "10%";
+        //mainTable2[i].style.right = "10%";
+        mainTable2[i].style.maxWidth = "100%";
         mainTable2[i].style.top = "250px";
-        if (operator_id_array.length == 1) {
-            mainTable2[i].style.left = "30%";
-            mainTable2[i].style.right = "30%";
+        if (operator_id_array.length <= 2) {
+            mainTable2[i].style.left = "25%";
+
         }
     }
 
@@ -33,6 +40,10 @@ function pageInit() {
         $('.total_distribution_' + operator_id_array[i] + '').val(total[3]);
     }
 
+    $('th.op, td.cell').css({
+        "width": "350px",
+        "display": "inline-block"
+    });
 }
 
 function onclick_back() {

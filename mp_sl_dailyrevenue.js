@@ -19,7 +19,6 @@ if (nlapiGetContext().getEnvironment() == "SANDBOX") {
 
 function daily_revenue(request, response) {
     if (request.getMethod() === "GET") {
-        var form = nlapiCreateForm('Daily Revenue :');
 
         var zee = request.getParameter('zee');
         //var month = request.getParameter('month');
@@ -53,9 +52,13 @@ function daily_revenue(request, response) {
         var start_date_dailyrevenue_array = start_date_dailyrevenue.split('/');
         var end_date_dailyrevenue_array = end_date_dailyrevenue.split('/');
 
+        var month = getMonthName(start_date_array[1]);
+
+        var form = nlapiCreateForm('Daily Revenue for ' + month + ' ' + start_date_array[2]);
+
         var inlinehtml = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"><script src="//code.jquery.com/jquery-1.11.0.min.js"></script><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"><link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"><script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><link rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2060796&c=1048144&h=9ee6accfd476c9cae718&_xt=.css"/><script src="https://1048144.app.netsuite.com/core/media/media.nl?id=2060797&c=1048144&h=ef2cda20731d146b5e98&_xt=.js"></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&c=1048144&h=a0ef6ac4e28f91203dfe&_xt=.css">';
 
-        var inlineQty = '<div><style>table#daily_revenue {font-size:12px; font-weight:bold; text-align:center; border-color: #24385b;} </style><table border="0" cellpadding="10" id="daily_revenue" cellspacing="0" class="table table-responsive table-striped table-bordered w-auto"><thead style="color: white;background-color: #607799;"><tr><th style="text-align:left;  width: 10%;"><b>Date</b></th>';
+        var inlineQty = '<div><style>table#daily_revenue {font-size:12px; font-weight:bold; text-align:center; border-color:#24385b; display:block; overflow-x:auto; white-space:nowrap;}</style><table border="0" cellpadding="10" id="daily_revenue" cellspacing="0" class="table table-responsive table-striped table-bordered"><thead style="color: white;background-color: #607799;"><tr><th class="cell" style="text-align:left;"><b>Date</b></th>';
 
         var operatorSearch = nlapiLoadSearch('customrecord_operator', 'customsearch_rta_operator_load');
         var newFilters = new Array();
@@ -71,11 +74,11 @@ function daily_revenue(request, response) {
             operator_array[operator_array.length] = operator_name;
             operator_id_array[operator_id_array.length] = operator_id;
             nlapiLogExecution('DEBUG', 'operator_name', operator_name);
-            inlineQty += '<th style="text-align:center;" data-op="' + operator_id + '"><b>' + operator_name + '</b></th>';
+            inlineQty += '<th class="op" style="text-align:center;" data-op="' + operator_id + '"><b>' + operator_name + '</b></th>';
             return true;
         });
         inlineQty += '</tr></thead>';
-        inlineQty += '<body>'
+        inlineQty += '<body>';
 
         nlapiLogExecution('DEBUG', 'operator_array', operator_array);
 
@@ -377,7 +380,7 @@ function daily_revenue(request, response) {
         for (i = 0; i < workingdays_count; i++) {
             date = workingdays[i];
 
-            inlineQty += '<tr><td style="font-size:small">' + date + '</td>';
+            inlineQty += '<tr><td class="date" style="font-size:small; vertical-align:middle;">' + date + '</td>';
             var total_service_count = 0;
             var total_revenue = 0.00;
             var total_service_count_service = 0;
@@ -435,10 +438,10 @@ function daily_revenue(request, response) {
                 total_revenue = total_revenue + total_revenue_monthly_package;
 
                 var comm = total_revenue * zee_comm / 100;
-                inlineQty += '<td><div class="col-sm-3"><label for="service_count_' + operator_id_array[y] + '" style="display:block;">SERVICES</label><button type="button" class="btn btn-lg btn-primary service_count_' + operator_id_array[y] + '" id="service_count_' + operator_id_array[y] + '" style="text-align:center;" data-op="' + operator_array[y] + '" data-service="' + total_service_count_service + '" data-package="' + total_service_count_package + '" data-monthly-package="' + total_service_count_monthly_package + '" value="' + total_service_count + '" disabled>' + total_service_count + '</button></div>';
-                inlineQty += '<div class="col-sm-3"><label for="service_count_' + operator_id_array[y] + '" style="display:block;">EXTRAS</label><button type="button" class="btn btn-lg btn-info extra_count_' + operator_id_array[y] + '" id="extra_count_' + operator_id_array[y] + '" style="text-align:center;" data-op="' + operator_array[y] + '" data-extra="' + total_service_count_extra + '" value="' + total_service_count_extra + '" disabled>' + total_service_count_extra + '</button></div>';
-                inlineQty += '<div class="col-sm-6"><div class="input-group" style="width:100%;"><span class="input-group-addon" style="width:45%;">Revenue ($)</span><input type="button" class="form-control revenue_' + operator_id_array[y] + '" style="text-align:center; background-color: white;" data-op="' + operator_array[y] + '" data-service="' + total_revenue_service.toFixed(2) + '" data-package="' + total_revenue_package + '" data-monthly-package="' + total_revenue_monthly_package.toFixed(2) + '" data-extra="' + total_revenue_extra + '" value="' + parseFloat(total_revenue).toFixed(2) + '" disabled /></div>'
-                inlineQty += '</br><div class="input-group" style="width:100%;"><span class="input-group-addon" style="width:45%;">Distribution ($)</span><input type="button" class="form-control distribution_' + operator_id_array[y] + '" style="text-align:center; background-color:white;" data-op="' + operator_array[y] + '" value="' + parseFloat(comm).toFixed(2) + '" disabled /></div></div></td>';
+                inlineQty += '<td class="cell"><div class="col-sm-3"><label for="service_count_' + operator_id_array[y] + '" style="display:block; color:#555;">SERVICES</label><button type="button" class="btn btn-lg btn-primary service_count_' + operator_id_array[y] + '" id="service_count_' + operator_id_array[y] + '" style="text-align:center;" data-op="' + operator_array[y] + '" data-service="' + total_service_count_service + '" data-package="' + total_service_count_package + '" data-monthly-package="' + total_service_count_monthly_package + '" value="' + total_service_count + '" disabled>' + total_service_count + '</button></div>';
+                inlineQty += '<div class="col-sm-3"><label for="service_count_' + operator_id_array[y] + '" style="display:block; color:#555;">EXTRAS</label><button type="button" class="btn btn-lg btn-info extra_count_' + operator_id_array[y] + '" id="extra_count_' + operator_id_array[y] + '" style="text-align:center;" data-op="' + operator_array[y] + '" data-extra="' + total_service_count_extra + '" value="' + total_service_count_extra + '" disabled>' + total_service_count_extra + '</button></div>';
+                inlineQty += '<div class="col-sm-6"><div class="input-group" style="width:100%;"><span class="input-group-addon" style="width:40%; font-weight:bold">R ($)</span><input type="button" class="form-control revenue_' + operator_id_array[y] + '" style="text-align:center; background-color: white;" data-op="' + operator_array[y] + '" data-service="' + total_revenue_service.toFixed(2) + '" data-package="' + total_revenue_package + '" data-monthly-package="' + total_revenue_monthly_package.toFixed(2) + '" data-extra="' + total_revenue_extra + '" value="' + parseFloat(total_revenue).toFixed(2) + '" disabled /></div>'
+                inlineQty += '</br><div class="input-group" style="width:100%;"><span class="input-group-addon" style="width:40%; font-weight:bold">D ($)</span><input type="button" class="form-control distribution_' + operator_id_array[y] + '" style="text-align:center; background-color:white;" data-op="' + operator_array[y] + '" value="' + parseFloat(comm).toFixed(2) + '" disabled /></div></div></td>';
 
             }
             inlineQty += '</tr>';
@@ -452,10 +455,10 @@ function daily_revenue(request, response) {
         inlineQty += '<tr><td style="text-align:center; font-size:medium; vertical-align:middle;">TOTAL</td>';
 
         for (y = 0; y < operator_array.length; y++) {
-            inlineQty += '<td><div class="col-sm-3"><label for="total_service_count_' + operator_id_array[y] + '" style="display:block;">SERVICES</label><button type="button" class="btn btn-lg total_service_count_' + operator_id_array[y] + '" id="total_service_count_' + operator_id_array[y] + '" style="text-align:center; background-color: white;color: #607799" data-op="' + operator_array[y] + '" disabled></button></div>';
+            inlineQty += '<td class="cell"><div class="col-sm-3"><label for="total_service_count_' + operator_id_array[y] + '" style="display:block;">SERVICES</label><button type="button" class="btn btn-lg total_service_count_' + operator_id_array[y] + '" id="total_service_count_' + operator_id_array[y] + '" style="text-align:center; background-color: white;color: #607799" data-op="' + operator_array[y] + '" disabled></button></div>';
             inlineQty += '<div class="col-sm-3"><label for="total_extra_count_' + operator_id_array[y] + '" style="display:block;">EXTRAS</label><button type="button" class="btn btn-lg total_extra_count_' + operator_id_array[y] + '" id="total_extra_count_' + operator_id_array[y] + '" style="text-align:center; background-color: white;color: #607799" data-op="' + operator_array[y] + '" disabled></button></div>';
-            inlineQty += '<div class="col-sm-6"><div class="input-group" style="width:100%;"><span class="input-group-addon" style="width:45%;">Revenue ($)</span><input type="button" class="form-control total_revenue_' + operator_id_array[y] + '" style="text-align:center; background-color: white;" data-op="' + operator_array[y] + '" disabled /></div>'
-            inlineQty += '</br><div class="input-group" style="width:100%;"><span class="input-group-addon" style="width:45%;">Distribution ($)</span><input type="button" class="form-control total_distribution_' + operator_id_array[y] + '" style="text-align:center; background-color:white;" data-op="' + operator_array[y] + '" disabled /></div></div></td>';
+            inlineQty += '<div class="col-sm-6"><div class="input-group" style="width:100%;"><span class="input-group-addon" style="width:40%; font-weight:bold">R ($)</span><input type="button" class="form-control total_revenue_' + operator_id_array[y] + '" style="text-align:center; background-color: white;" data-op="' + operator_array[y] + '" disabled /></div>'
+            inlineQty += '</br><div class="input-group" style="width:100%;"><span class="input-group-addon" style="width:40%; font-weight:bold">D ($)</span><input type="button" class="form-control total_distribution_' + operator_id_array[y] + '" style="text-align:center; background-color:white;" data-op="' + operator_array[y] + '" disabled /></div></div></td>';
         }
 
 
@@ -515,4 +518,9 @@ function sum(array){
         sum += array[i];
     }
     return sum;
+}
+
+function getMonthName(month){
+    var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    return monthList[month - 1];
 }
