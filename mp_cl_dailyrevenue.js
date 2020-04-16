@@ -23,7 +23,7 @@ function pageInit() {
         //mainTable2[i].style.left = "10%";
         //mainTable2[i].style.right = "10%";
         mainTable2[i].style.maxWidth = "100%";
-        mainTable2[i].style.top = "250px";
+        mainTable2[i].style.top = "350px";
         if (operator_id_array.length <= 2) {
             mainTable2[i].style.left = "25%";
 

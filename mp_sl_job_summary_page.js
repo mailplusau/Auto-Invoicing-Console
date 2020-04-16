@@ -192,37 +192,6 @@ function summary_page(request, response) {
         nlapiLogExecution('DEBUG', 'zeeName_test', zeeName_test);
 
 
-/*        if (nlapiGetContext().getEnvironment() == "SANDBOX") { //THE SEARCHES IDS ARE NOT THE SAME ON SANDBOX AND PRODUCTION
-            if (zeeName_test == 'TEST') {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__7');
-            } else if (zeeName_firstletter == 'A' || zeeName_firstletter == 'B' || zeeName_firstletter == 'C' || zeeName_firstletter == 'D' || zeeName_firstletter == 'E' || zeeName_firstletter == 'F') {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2_2');
-            } else if (zeeName_firstletter == 'G' || zeeName_firstletter == 'H' || zeeName_firstletter == 'I' || zeeName_firstletter == 'J' || zeeName_firstletter == 'K' || zeeName_firstletter == 'L' || zeeName_firstletter == 'M') {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__2');
-            } else if (zeeName_firstletter == 'N' || zeeName_firstletter == 'O' || zeeName_firstletter == 'P' || zeeName_firstletter == 'Q' || zeeName_firstletter == 'R') {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__5');
-            } else if (zeeName_firstletter == 'S' || zeeName_firstletter == 'T' || zeeName_firstletter == 'U' || zeeName_firstletter == 'V' || zeeName_firstletter == 'W' || zeeName_firstletter == 'X' || zeeName_firstletter == 'Y' || zeeName_firstletter == 'Z') {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2__6');
-            } else {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt');
-            }
-        } else {
-            if (zeeName_test == 'TEST') {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2');
-            } else if (zeeName_firstletter == 'A' || zeeName_firstletter == 'B' || zeeName_firstletter == 'C' || zeeName_firstletter == 'D' || zeeName_firstletter == 'E' || zeeName_firstletter == 'F') {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3');
-            } else if (zeeName_firstletter == 'G' || zeeName_firstletter == 'H' || zeeName_firstletter == 'I' || zeeName_firstletter == 'J' || zeeName_firstletter == 'K' || zeeName_firstletter == 'L' || zeeName_firstletter == 'M') {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3_2');
-            } else if (zeeName_firstletter == 'N' || zeeName_firstletter == 'O' || zeeName_firstletter == 'P' || zeeName_firstletter == 'Q' || zeeName_firstletter == 'R') {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3__2');
-                /*            } else if (zeeName_firstletter == 'R') {
-                                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_4');
-            } else if (zeeName_firstletter == 'S' || zeeName_firstletter == 'T' || zeeName_firstletter == 'U' || zeeName_firstletter == 'V' || zeeName_firstletter == 'W' || zeeName_firstletter == 'X' || zeeName_firstletter == 'Y' || zeeName_firstletter == 'Z') {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3__3');
-            } else {
-                var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt');
-            }
-        }*/
         if (zeeName_test == 'TEST') {
             var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2');
         } else if (zeeName_firstletter == 'A' || zeeName_firstletter == 'B' || zeeName_firstletter == 'C' || zeeName_firstletter == 'D' || zeeName_firstletter == 'E' || zeeName_firstletter == 'F') {
