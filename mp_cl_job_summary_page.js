@@ -120,7 +120,7 @@ function clientPageInit(type) {
         mainTable2[i].style.position = "absolute";
         mainTable2[i].style.left = "10%";
         mainTable2[i].style.width = "80%";
-        mainTable2[i].style.top = "500px";
+        mainTable2[i].style.top = "580px";
     }
 
     $('.dynatable-sort-header').css("color", "white");
@@ -214,6 +214,25 @@ $(document).on("change", ".invoicing_month", function(e) {
     }
 });
 
+$(document).on('click', '#dailyrevenue', function(){
+    var valueMonth = checkMonth();
+    dates = service_start_end_date(valueMonth);
+    var zee = parseInt(nlapiGetFieldValue('zee'));
+
+    if (valueMonth != false) {
+        var url = baseURL + "/app/site/hosting/scriptlet.nl?script=936&deploy=1";
+        if (nlapiGetContext().getEnvironment() == "SANDBOX") {
+            var url = baseURL + "/app/site/hosting/scriptlet.nl?script=936&deploy=1";
+        }
+
+        url += "&start_date=" + dates[0] + "&end_date=" + dates[1] + "&zee=" + zee;
+        window.location.href = url;
+    } else {
+        alert('Please select the invocing period');
+        $('.invoicing_month').focus();
+        return false;
+    }
+})
 
 /**
  * [onclick_ContinueReview description] - On click of Start Review / Contine Review the next customer that has the invoiceable field as null is shown.

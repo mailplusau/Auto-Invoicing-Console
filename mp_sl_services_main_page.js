@@ -63,7 +63,7 @@ function services_main_page(request, response) {
         var customer_zee = customer_record.getFieldValue('partner');
 
         // if(zee != customer_zee){
-        // 	locked = 'yes';
+        //  locked = 'yes';
         // }
 
         if (isNullorEmpty(poNumber)) {
@@ -1284,10 +1284,10 @@ function services_main_page(request, response) {
                         inlineQty += '<tr>';
                         //IF SERVICE IS ASSGINED TO PACKAGE WHILE POACKAGE CREATION, ASSIGN PACKAGE BUTTON WILL BE SHOWN
                         // if (!isNullorEmpty(package_assigned_to_service)) {
-                        // 	var assignPackageRows = completedJobs(true, completed_icon, old_service_qty, customer_id, old_service_rate, old_service_id, old_job_group, 'Services', old_package, old_service_qty, invoiceable_completed_count);
-                        // 	inlineQty += assignPackageRows;
+                        //  var assignPackageRows = completedJobs(true, completed_icon, old_service_qty, customer_id, old_service_rate, old_service_id, old_job_group, 'Services', old_package, old_service_qty, invoiceable_completed_count);
+                        //  inlineQty += assignPackageRows;
                         // } else {
-                        // 	inlineQty += '<td></td>';
+                        //  inlineQty += '<td></td>';
                         // }
                         // 
                         if (service_price_change == true) {
@@ -1383,10 +1383,10 @@ function services_main_page(request, response) {
                             inlineQty += '<tr>';
                             //IF SERVICE IS ASSGINED TO PACKAGE WHILE POACKAGE CREATION, ASSIGN PACKAGE BUTTON WILL BE SHOWN
                             // if (!isNullorEmpty(package_assigned_to_service)) {
-                            // 	var assignPackageRows = completedJobs(true, completed_icon, old_service_qty, customer_id, old_service_rate, old_service_id, old_job_group, 'Services', old_package, old_service_qty, invoiceable_completed_count);
-                            // 	inlineQty += assignPackageRows;
+                            //  var assignPackageRows = completedJobs(true, completed_icon, old_service_qty, customer_id, old_service_rate, old_service_id, old_job_group, 'Services', old_package, old_service_qty, invoiceable_completed_count);
+                            //  inlineQty += assignPackageRows;
                             // } else {
-                            // 	inlineQty += '<td></td>';
+                            //  inlineQty += '<td></td>';
                             // }
                             var serviceNameRow = serviceName(old_service_id);
                             inlineQty += serviceNameRow;
@@ -1535,10 +1535,10 @@ function services_main_page(request, response) {
                     var package_assigned_to_service = nlapiLookupField('customrecord_service', old_service_id, 'custrecord_service_package');
                     inlineQty += '<tr>';
                     // if (!isNullorEmpty(package_assigned_to_service)) {
-                    // 	var assignPackageRows = completedJobs(true, completed_icon, old_service_qty, customer_id, old_service_rate, old_service_id, old_job_group, 'Services', old_package, old_service_qty, invoiceable_completed_count);
-                    // 	inlineQty += assignPackageRows;
+                    //  var assignPackageRows = completedJobs(true, completed_icon, old_service_qty, customer_id, old_service_rate, old_service_id, old_job_group, 'Services', old_package, old_service_qty, invoiceable_completed_count);
+                    //  inlineQty += assignPackageRows;
                     // } else {
-                    // 	inlineQty += '<td></td>';
+                    //  inlineQty += '<td></td>';
                     // }
                     // 
                     // 
@@ -1933,7 +1933,7 @@ function services_main_page(request, response) {
     } else {
 
         var customer = parseInt(request.getParameter('customer_id'));
-        var zee_id = request.getParameter('zee_id'); //User/Role Zee
+        var zee_id = parseInt(request.getParameter('zee_id')); //User/Role Zee
 
         var extra_service_string = request.getParameter('extra_service_string');
         var extra_qty_string = request.getParameter('extra_qty_string');
@@ -2143,7 +2143,7 @@ function services_main_page(request, response) {
 
                 //WS Edit: searched_jobs_extras does not seem like an appropriate variable name for the search, we are not searching for extras.
                 var search_unreviewed = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt');
-                var zee_text = nlapiLoadRecord('partner', zee_id).getFieldValue('entitytitle');
+                var zee_text = nlapiLoadRecord('partner',zee_id).getFieldValue('entitytitle');
 
                 var strFormula = "COALESCE({custrecord_job_service.custrecord_service_franchisee},{custrecord_job_group.custrecord_jobgroup_franchisee},{custrecord_job_franchisee},'')";
 
