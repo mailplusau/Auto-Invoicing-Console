@@ -193,19 +193,16 @@ function summary_page(request, response) {
 
 
         if (zeeName_test == 'TEST') {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_2');
+            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_test');
         } else if (zeeName_firstletter == 'A' || zeeName_firstletter == 'B' || zeeName_firstletter == 'C' || zeeName_firstletter == 'D' || zeeName_firstletter == 'E' || zeeName_firstletter == 'F') {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3');
+            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_a_f');
         } else if (zeeName_firstletter == 'G' || zeeName_firstletter == 'H' || zeeName_firstletter == 'I' || zeeName_firstletter == 'J' || zeeName_firstletter == 'K' || zeeName_firstletter == 'L' || zeeName_firstletter == 'M') {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3_2');
+            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_g_m');
         } else if (zeeName_firstletter == 'N' || zeeName_firstletter == 'O' || zeeName_firstletter == 'P' || zeeName_firstletter == 'Q' || zeeName_firstletter == 'R') {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3__2');
+            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_n_r');
         } else if (zeeName_firstletter == 'S' || zeeName_firstletter == 'T' || zeeName_firstletter == 'U' || zeeName_firstletter == 'V' || zeeName_firstletter == 'W' || zeeName_firstletter == 'X' || zeeName_firstletter == 'Y' || zeeName_firstletter == 'Z') {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_3__3');
-        } else {
-            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt');
+            var searchedSummary = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt_s_z');
         }
-
 
         //var zee_record = nlapiLoadRecord('partner', zee);
 

@@ -39,9 +39,11 @@ function daily_revenue(request, response) {
         nlapiLogExecution('DEBUG', 'start_date_array', start_date_array);
         nlapiLogExecution('DEBUG', 'today', today);
 
+        var same_month = false;
         if (today_month == start_date_array[1] && today_year == start_date_array[2]) {
             var start_date_dailyrevenue = start_date;
             var end_date_dailyrevenue = today;
+            same_month = true;
         } else {
             var start_date_dailyrevenue = start_date;
             var end_date_dailyrevenue = end_date;
@@ -58,7 +60,7 @@ function daily_revenue(request, response) {
 
         var inlinehtml = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"><script src="//code.jquery.com/jquery-1.11.0.min.js"></script><link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"><link href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"><script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><link rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2060796&c=1048144&h=9ee6accfd476c9cae718&_xt=.css"/><script src="https://1048144.app.netsuite.com/core/media/media.nl?id=2060797&c=1048144&h=ef2cda20731d146b5e98&_xt=.js"></script><link type="text/css" rel="stylesheet" href="https://1048144.app.netsuite.com/core/media/media.nl?id=2090583&c=1048144&h=a0ef6ac4e28f91203dfe&_xt=.css">';
 
-        inlinehtml +='<div><b><u>Notes:</u></b><ul><li>The Daily Revenue is based on services completed via the app only.</li><li>For services completed by several operators, the service appears under the operator that completes the first stop.</li><li>For packages, the package rate is distributed over the operators that complete the different services.</li><li>For monthly packages, the rate is  distributed over the working days of the month.</li><li><div class="input-group input-group-sm" style="display: inline-flex; padding:2px;"><span class="input-group-addon" style="width:40%; font-weight:bold">R ($)</span><input type="button" class="form-control" style="text-align:center; background-color: white;" value="Revenue" disabled /></div><div class="input-group input-group-sm" style="display: inline-flex; padding:2px;"><span class="input-group-addon" style="width:40%; font-weight:bold">D ($)</span><input type="button" class="form-control" style="text-align:center; background-color: white;" value="Distribution" disabled /></div></li></ul>';
+        inlinehtml += '<div><b><u>Notes:</u></b><ul><li>The Daily Revenue is based on services completed via the app only.</li><li>For services completed by several operators, the service appears under the operator that completes the first stop.</li><li>For packages, the package rate is distributed over the operators that complete the different services.</li><li>For monthly packages, the rate is  distributed over the working days of the month.</li><li><div class="input-group input-group-sm" style="display: inline-flex; padding:2px;"><span class="input-group-addon" style="width:40%; font-weight:bold">R ($)</span><input type="button" class="form-control" style="text-align:center; background-color: white;" value="Revenue" disabled /></div><div class="input-group input-group-sm" style="display: inline-flex; padding:2px;"><span class="input-group-addon" style="width:40%; font-weight:bold">D ($)</span><input type="button" class="form-control" style="text-align:center; background-color: white;" value="Distribution" disabled /></div></li></ul>';
 
         var inlineQty = '<div><style>table#daily_revenue {font-size:12px; font-weight:bold; text-align:center; border-color:#24385b; display:block; overflow-x:auto; white-space:nowrap;}</style><table border="0" cellpadding="10" id="daily_revenue" cellspacing="0" class="table table-responsive table-striped table-bordered"><thead style="color: white;background-color: #607799;"><tr><th class="cell" style="text-align:left;"><b>Date</b></th>';
 
@@ -186,10 +188,6 @@ function daily_revenue(request, response) {
                 }
                 monthly_count++;
             } else if (discount_period == 1 || discount_period == 2) { //per day or per visit
-                nlapiLogExecution('DEBUG', 'package', package);
-                nlapiLogExecution('DEBUG', 'old_package', old_package);
-                nlapiLogExecution('DEBUG', 'date_sch', date_sch);
-                nlapiLogExecution('DEBUG', 'old_date_sch', old_date_sch);
                 if (old_discount_period == 3) { //save the last monthly package
                     package_monthly_revenue = old_fixed_rate_value / parseInt(workingdays_count) / parseInt(package_operator_count);
                     nlapiLogExecution('DEBUG', 'LAST old_fixed_rate_value', old_fixed_rate_value);
@@ -204,8 +202,7 @@ function daily_revenue(request, response) {
                     package_operator_count = 1;
                     monthly_count++;
                 }
-                if (perday_count == 0) {
-                } else if (old_date_sch == date_sch) {
+                if (perday_count == 0) {} else if (old_date_sch == date_sch) {
                     nlapiLogExecution('DEBUG', 'same date');
                     if (old_package == package && old_operator != operator) {
                         package_operator_count += 1;
@@ -334,11 +331,6 @@ function daily_revenue(request, response) {
             var service_count = jobResult.getValue("internalid", null, "COUNT");
             zee_comm = parseFloat(jobResult.getValue("formulapercent", null, "GROUP"));
 
-
-            if (count > 0 && old_date_scheduled != date_scheduled) {
-                k = 0;
-                l = 0;
-            }
             if (service_category == 1.00) { //Services
                 service_date_sch_array[service_date_sch_array.length] = date_scheduled;
                 service_operator_array[service_operator_array.length] = operator;
@@ -381,6 +373,13 @@ function daily_revenue(request, response) {
         start_time = Date.now();
         for (i = 0; i < workingdays_count; i++) {
             date = workingdays[i];
+            var date_array = date.split('/');
+            var date_day = date_array[0];
+            //nlapiLogExecution('DEBUG', 'date_day', date_day)
+            //nlapiLogExecution('DEBUG', 'today_day', today_day)
+            if (same_month == true && date_day > today_day) {
+                break;
+            }
 
             inlineQty += '<tr><td class="date" style="font-size:small; vertical-align:middle;">' + date + '</td>';
             var total_service_count = 0;
@@ -447,9 +446,6 @@ function daily_revenue(request, response) {
 
             }
             inlineQty += '</tr>';
-            if (date == today) {
-                break;
-            }
         }
 
         inlineQty += '</tbody>';
@@ -514,15 +510,15 @@ function getWorkDays(month, year) {
     return workdays;
 }
 
-function sum(array){
+function sum(array) {
     var sum = 0;
-    for (i = 0; i < array.length; i++){
+    for (i = 0; i < array.length; i++) {
         sum += array[i];
     }
     return sum;
 }
 
-function getMonthName(month){
+function getMonthName(month) {
     var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     return monthList[month - 1];
 }

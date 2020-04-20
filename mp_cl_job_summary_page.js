@@ -120,7 +120,7 @@ function clientPageInit(type) {
         mainTable2[i].style.position = "absolute";
         mainTable2[i].style.left = "10%";
         mainTable2[i].style.width = "80%";
-        mainTable2[i].style.top = "500px";
+        mainTable2[i].style.top = "580px";
     }
 
     $('.dynatable-sort-header').css("color", "white");
