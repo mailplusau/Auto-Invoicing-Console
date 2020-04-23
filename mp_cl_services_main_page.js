@@ -6,8 +6,8 @@
  *
  * Remarks: Client script that habndles all the validations and calculations of the review page.         
  * 
- * @Last Modified by:   mailplusar
- * @Last Modified time: 2019-05-07 10:05:41
+ * @Last Modified by:   Ankith
+ * @Last Modified time: 2020-04-20 07:01:50
  *
  */
 
@@ -118,20 +118,20 @@ function clientPageInit(type) {
 
     var result = finalise_date(nlapiGetFieldValue('start_date'));
 
-    if (result == false && role == 1000) {
-        $('.invoiceable_qty').prop('disabled', function(i, v) {
-            return !v;
-        });
-        $('.fixed_discount_value').prop('disabled', function(i, v) {
-            return !v;
-        });
-        $('.fixed_discount_qty').prop('disabled', function(i, v) {
-            return !v;
-        });
-        $('.total_package_value').prop('disabled', function(i, v) {
-            return !v;
-        });
-    }
+    // if (result == false && role == 1000) {
+    //     $('.invoiceable_qty').prop('disabled', function(i, v) {
+    //         return !v;
+    //     });
+    //     $('.fixed_discount_value').prop('disabled', function(i, v) {
+    //         return !v;
+    //     });
+    //     $('.fixed_discount_qty').prop('disabled', function(i, v) {
+    //         return !v;
+    //     });
+    //     $('.total_package_value').prop('disabled', function(i, v) {
+    //         return !v;
+    //     });
+    // }
 
 }
 
