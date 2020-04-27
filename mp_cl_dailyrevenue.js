@@ -26,7 +26,6 @@ function pageInit() {
         mainTable2[i].style.top = "350px";
         if (operator_id_array.length <= 2) {
             mainTable2[i].style.left = "25%";
-
         }
     }
 
@@ -41,7 +40,7 @@ function pageInit() {
     }
 
     $('th.op, td.cell').css({
-        "width": "350px",
+        "width": "400px",
         "display": "inline-block"
     });
 }
