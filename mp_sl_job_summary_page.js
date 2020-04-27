@@ -188,8 +188,8 @@ function summary_page(request, response) {
 
         var zeeName_firstletter = zeeName.substring(0, 1);
         var zeeName_test = zeeName.substring(0, 4);
-        nlapiLogExecution('DEBUG', 'zeeName_firstletter', zeeName_firstletter);
-        nlapiLogExecution('DEBUG', 'zeeName_test', zeeName_test);
+        // nlapiLogExecution('DEBUG', 'zeeName_firstletter', zeeName_firstletter);
+        // nlapiLogExecution('DEBUG', 'zeeName_test', zeeName_test);
 
 
         if (zeeName_test == 'TEST') {
@@ -235,6 +235,7 @@ function summary_page(request, response) {
         var old_service_rate;
         var old_service_qty;
         var old_extra_qty;
+        var old_service_type;
         var old_customer_name;
         var old_ID;
         var old_service_text;
@@ -318,6 +319,7 @@ function summary_page(request, response) {
             var service_id = searchResult.getValue('custrecord_job_service', null, 'group');
             var service_text = searchResult.getText('custrecord_job_service', null, 'group');
             var service_category = searchResult.getValue("custrecord_job_service_category", null, "GROUP");
+            var service_type = searchResult.getValue("custrecord_service", "CUSTRECORD_JOB_SERVICE", "GROUP");
             if (isNullorEmpty(searchResult.getValue('formulanumeric', null, 'SUM'))) {
                 var service_qty = 0;
             } else {
@@ -375,12 +377,22 @@ function summary_page(request, response) {
 
             var zee_comm = parseFloat(searchResult.getValue('formulapercent', null, 'GROUP'));
 
+            if (companyName == 'B & R Enclosures Pty Ltd - Heathwood') {
+                nlapiLogExecution('DEBUG', 'service_id', service_id); //569
+                nlapiLogExecution('DEBUG', 'service_text', service_text); //569
+                nlapiLogExecution('DEBUG', 'package_id', package_id); //569
+                nlapiLogExecution('DEBUG', 'package_single_line', package_single_line); //1
+                nlapiLogExecution('DEBUG', 'package_period', package_period); //1
+                nlapiLogExecution('DEBUG', 'package_fix_rate', package_fix_rate); //9
+                nlapiLogExecution('DEBUG', 'service_type', service_type); //9
+            }
+
             zee_comm_array[zee_comm_array.length] = zee_comm;
             if (countCustomers == 0) {
 
                 if (isNullorEmpty(package_id)) {
                     if (invoiceable == 'Yes' || (isNullorEmpty(invoiceable) && jobGroupStatus == '1') || (isNullorEmpty(invoiceable) && service_category != '1')) {
-                        var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
+                        // var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
                         if (service_type == 22) {
                             admin_fees_result = true;
                         }
@@ -395,7 +407,7 @@ function summary_page(request, response) {
                     }
                 } else {
                     if (package_single_line == '1') {
-                        var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
+                        // var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
                         if (service_type == 17) {
                             single_line_discount = true;
                             var total_per_line = (service_rate * (service_qty + extra_qty))
@@ -407,7 +419,7 @@ function summary_page(request, response) {
                                 total_comm_per_customer = total_comm_per_customer + ((zee_comm * total_per_line) / 100);
                             }
                         } else {
-                            // service_unique_count++;
+                            service_unique_count++;
                             if (package_period != 3) {
                                 if (invoiceable == 'Yes' || (isNullorEmpty(invoiceable) && jobGroupStatus == '1') || (inv_if_incomplete == '1')) {
                                     service_count += (service_qty + extra_qty);
@@ -432,7 +444,7 @@ function summary_page(request, response) {
                                 }
                             }
                         } else {
-                            // service_unique_count++;
+                            service_unique_count++;
                             if (package_period != 3) {
                                 if (invoiceable == 'Yes' || (isNullorEmpty(invoiceable) && jobGroupStatus == '1') || (inv_if_incomplete == '1')) {
                                     service_count += (service_qty + extra_qty);
@@ -459,8 +471,18 @@ function summary_page(request, response) {
                     // }
 
                     if (single_line_discount == false) {
+                        if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                            nlapiLogExecution('AUDIT', 'service_count', service_count);
+                            nlapiLogExecution('AUDIT', 'service_unique_count', service_unique_count);
+                        }
                         if (service_count > 1) {
                             service_count = service_count / service_unique_count;
+                        }
+                        if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                            nlapiLogExecution('AUDIT', 'service_count', service_count);
+                            nlapiLogExecution('AUDIT', 'total_per_customer', total_per_customer);
+                            nlapiLogExecution('AUDIT', 'old_package_fix_rate', old_package_fix_rate);
+                            nlapiLogExecution('AUDIT', 'zee_comm', zee_comm);
                         }
                         total_per_customer = total_per_customer + ((old_package_fix_rate * service_count) * 1.1);
                         total_comm_per_customer = total_comm_per_customer + (((zee_comm * ((old_package_fix_rate * service_count))) / 100) * 1.1);
@@ -478,13 +500,15 @@ function summary_page(request, response) {
                         total_comm_per_customer = total_comm_per_customer + (((min_zee_comm * (old_admin_fess)) / 100) * 1.1);
                     }
 
-                    nlapiLogExecution('DEBUG', 'total_per_customer for customer: ' + old_customer_name, total_per_customer);
+                    if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                        nlapiLogExecution('DEBUG', 'total_per_customer for customer: ' + old_customer_name, total_per_customer);
 
-                    // if(old_customer_id == 518069){
-                    nlapiLogExecution('AUDIT', 'invoiced', invoiced);
-                    nlapiLogExecution('AUDIT', 'old_invoice_custom', old_invoice_custom);
-                    nlapiLogExecution('AUDIT', 'old_invoice_total', old_invoice_total);
-                    nlapiLogExecution('AUDIT', 'total_per_customer', total_per_customer);
+                        // if(old_customer_id == 518069){
+                        nlapiLogExecution('AUDIT', 'invoiced', invoiced);
+                        nlapiLogExecution('AUDIT', 'old_invoice_custom', old_invoice_custom);
+                        nlapiLogExecution('AUDIT', 'old_invoice_total', old_invoice_total);
+                        nlapiLogExecution('AUDIT', 'total_per_customer', total_per_customer);
+                    }
                     // }
 
                     if (invoiced == true) {
@@ -565,7 +589,7 @@ function summary_page(request, response) {
 
                     if (isNullorEmpty(package_id)) {
                         if (invoiceable == 'Yes' || (isNullorEmpty(invoiceable) && jobGroupStatus == '1') || (isNullorEmpty(invoiceable) && service_category != '1')) {
-                            var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
+                            // var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
                             if (service_type == 22) {
                                 admin_fees_result = true;
                             }
@@ -580,7 +604,7 @@ function summary_page(request, response) {
                         }
                     } else {
                         if (package_single_line == '1') {
-                            var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
+                            // var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
                             if (service_type == 17) {
                                 single_line_discount = true;
                                 var total_per_line = (service_rate * (service_qty + extra_qty))
@@ -592,6 +616,7 @@ function summary_page(request, response) {
                                     total_comm_per_customer = total_comm_per_customer + ((zee_comm * total_per_line) / 100);
                                 }
                             } else {
+                                service_unique_count++;
                                 if (package_period != 3) {
                                     if (invoiceable == 'Yes' || (isNullorEmpty(invoiceable) && jobGroupStatus == '1') || (inv_if_incomplete == '1')) {
                                         service_count += (service_qty + extra_qty);
@@ -616,6 +641,7 @@ function summary_page(request, response) {
                                     }
                                 }
                             } else {
+                                service_unique_count++;
                                 if (package_period != 3) {
                                     if (invoiceable == 'Yes' || (isNullorEmpty(invoiceable) && jobGroupStatus == '1') || (inv_if_incomplete == '1')) {
                                         service_count += (service_qty + extra_qty);
@@ -630,6 +656,9 @@ function summary_page(request, response) {
 
                     if (old_sc_ID != specialCustomerInternalID) {
 
+                        if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                            nlapiLogExecution('DEBUG', 'Inside Special Customer');
+                        }
                         // nlapiLogExecution('DEBUG', 'zee', zee);
 
                         // if (zee == old_customer_partner) {
@@ -660,7 +689,7 @@ function summary_page(request, response) {
                             total_comm_per_customer = total_comm_per_customer + (((min_zee_comm * (old_admin_fess)) / 100) * 1.1);
                         }
 
-                        nlapiLogExecution('DEBUG', 'SC - total_per_customer for customer: ' + old_sc_name, total_per_customer);
+                        // nlapiLogExecution('DEBUG', 'SC - total_per_customer for customer: ' + old_sc_name, total_per_customer);
 
                         if (invoiced == true) {
                             if (isNullorEmpty(old_sc_ID)) {
@@ -740,7 +769,7 @@ function summary_page(request, response) {
 
                         if (isNullorEmpty(package_id)) {
                             if (invoiceable == 'Yes' || (isNullorEmpty(invoiceable) && jobGroupStatus == '1') || (isNullorEmpty(invoiceable) && service_category != '1')) {
-                                var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
+                                // var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
                                 if (service_type == 22) {
                                     admin_fees_result = true;
                                 }
@@ -755,7 +784,7 @@ function summary_page(request, response) {
                             }
                         } else {
                             if (package_single_line == '1') {
-                                var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
+                                // var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
                                 if (service_type == 17) {
                                     single_line_discount = true;
                                     var total_per_line = (service_rate * (service_qty + extra_qty))
@@ -802,11 +831,22 @@ function summary_page(request, response) {
                             }
                         }
                     } else if (old_service_id != service_id) {
-                        var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
 
-                        var old_service_type = nlapiLookupField('customrecord_service', old_service_id, 'custrecord_service');
+                        if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                            nlapiLogExecution('DEBUG', 'Inside New Services', old_service_text);
+                        }
+                        // var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
+
+                        // var old_service_type = nlapiLookupField('customrecord_service', old_service_id, 'custrecord_service');
 
                         if (old_package_id != package_id) {
+                            if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                                nlapiLogExecution('AUDIT', 'End of Packages');
+                                nlapiLogExecution('AUDIT', 'service_count', service_count);
+                                nlapiLogExecution('AUDIT', 'service_unique_count', service_unique_count);
+                                nlapiLogExecution('AUDIT', 'total_per_customer', total_per_customer);
+                                nlapiLogExecution('AUDIT', 'total_comm_per_customer', total_comm_per_customer);
+                            }
                             if (single_line_discount == false) {
                                 if (service_count > 1) {
                                     service_count = service_count / service_unique_count;
@@ -817,13 +857,27 @@ function summary_page(request, response) {
                             single_line_discount = false;
                             service_count = 0;
                             service_unique_count = 0;
+                            if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                                nlapiLogExecution('AUDIT', 'End of Packages');
+                                nlapiLogExecution('AUDIT', 'total_per_customer', total_per_customer);
+                                nlapiLogExecution('AUDIT', 'total_comm_per_customer', total_comm_per_customer);
+                            }
                         }
 
                         service_unique_count++;
 
                         if (isNullorEmpty(package_id)) {
                             if (invoiceable == 'Yes' || (isNullorEmpty(invoiceable) && jobGroupStatus == '1') || (isNullorEmpty(invoiceable) && service_category != '1')) {
-                                var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
+
+                                if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                                    nlapiLogExecution('AUDIT', 'Inside Non Packages Invoiceable Yes or Status Completed or Extras');
+                                    nlapiLogExecution('AUDIT', 'total_comm_per_customer', total_comm_per_customer);
+                                    nlapiLogExecution('AUDIT', 'total_per_customer', total_per_customer);
+                                    nlapiLogExecution('AUDIT', 'invoiceable', invoiceable);
+                                    nlapiLogExecution('AUDIT', 'jobGroupStatus', jobGroupStatus);
+                                    nlapiLogExecution('AUDIT', 'service_category', service_category);
+                                }
+                                // var service_type = nlapiLookupField('customrecord_service', service_id, 'custrecord_service');
                                 if (service_type == 22) {
                                     admin_fees_result = true;
                                 }
@@ -836,8 +890,13 @@ function summary_page(request, response) {
                                     total_comm_per_customer = total_comm_per_customer + ((zee_comm * total_per_line) / 100);
                                 }
                             }
+
                         } else {
+
                             if (package_single_line == '1') {
+                                if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                                    nlapiLogExecution('DEBUG', 'Package Single Line is 1');
+                                }
                                 if (service_type == 17) {
                                     single_line_discount = true;
 
@@ -858,9 +917,14 @@ function summary_page(request, response) {
                                         service_count = 1;
                                     }
                                 }
+                                if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                                    nlapiLogExecution('DEBUG', 'Package Single Line is 1. Service Count: ', service_count);
+                                }
 
                             } else {
-
+                                if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                                    nlapiLogExecution('DEBUG', 'Package Single Line is 0');
+                                }
                                 if (service_type == 17) {
                                     single_line_discount = true;
                                 }
@@ -888,6 +952,9 @@ function summary_page(request, response) {
                         }
 
                     } else {
+                        if (old_customer_name == 'B & R Enclosures Pty Ltd - Heathwood') {
+                            nlapiLogExecution('DEBUG', 'Last Extra');
+                        }
                         if (old_package_id != package_id) {
                             if (single_line_discount == false) {
                                 if (service_count > 1 && service_unique_count != 0) {
@@ -969,6 +1036,7 @@ function summary_page(request, response) {
 
             old_customer_id = customerInternalID;
             old_service_id = service_id;
+            old_service_type = service_type;
             old_service_rate = service_rate;
             old_service_qty = service_qty;
             old_extra_qty = extra_qty;
@@ -1142,10 +1210,10 @@ function summary_page(request, response) {
             startFinalize = true;
         }
 
-        nlapiLogExecution('DEBUG', 'reviewed_count', reviewed_count);
-        nlapiLogExecution('DEBUG', 'countCustomers', countCustomers);
-        nlapiLogExecution('DEBUG', 'edit_count', edit_count);
-        nlapiLogExecution('DEBUG', 'invoiced_count', invoiced_count);
+        // nlapiLogExecution('DEBUG', 'reviewed_count', reviewed_count);
+        // nlapiLogExecution('DEBUG', 'countCustomers', countCustomers);
+        // nlapiLogExecution('DEBUG', 'edit_count', edit_count);
+        // nlapiLogExecution('DEBUG', 'invoiced_count', invoiced_count);
 
 
         if (countCustomers == edit_count && countCustomers != 0) {
