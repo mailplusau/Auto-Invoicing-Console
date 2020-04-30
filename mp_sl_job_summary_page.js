@@ -1231,8 +1231,10 @@ function summary_page(request, response) {
                 if (reviewed_count > 0 || invoiced_count == countCustomers) {
                     //DONT SHOW FINALISE BUTTON
                 } else {
-                    form.addSubmitButton('FINALISE');
-                    form.addButton('finalise', 'FINALISE', 'onclick_Finalise()');
+                    if (role == 3) {
+                        form.addSubmitButton('FINALISE');
+                        form.addButton('finalise', 'FINALISE', 'onclick_Finalise()');
+                    }
                 }
             }
         } else if (edit_count == 0 && countCustomers != 0) {
