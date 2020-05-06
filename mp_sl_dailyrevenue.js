@@ -524,6 +524,7 @@ function daily_revenue(request, response) {
             for (y = 0; y < operator_array.length; y++) {
                 operator = operator_array[y];
                 total_service_count = 0;
+                total_service_count_extra = 0;
                 total_revenue = 0.00;
 
                 //SERVICES
