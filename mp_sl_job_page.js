@@ -148,7 +148,7 @@ function job_page(request, response) {
 
         var filPo = [];
         filPo[filPo.length] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer);
-        filPo[filPo.length] = new nlobjSearchFilter('custrecord_job_source', null, 'anyof', [1, 2, 3, 4, 6]);
+        filPo[filPo.length] = new nlobjSearchFilter('custrecord_job_source', null, 'anyof', [4, 5, 6]);
 
         if (packageID == 'null') {
             filPo[filPo.length] = new nlobjSearchFilter('custrecord_job_service', null, 'is', service);
