@@ -2154,6 +2154,7 @@ function services_main_page(request, response) {
                 fil_po[fil_po.length] = new nlobjSearchFilter('formuladate', null, 'isempty').setFormula(strFormula2);
                 fil_po[fil_po.length] = new nlobjSearchFilter('custrecord_job_date_inv_finalised', null, 'isempty');
                 fil_po[fil_po.length] = new nlobjSearchFilter('custrecord_job_customer', null, 'noneof', customer);
+                fil_po[fil_po.length] = new nlobjSearchFilter("partner","CUSTRECORD_JOB_CUSTOMER", 'is', zee_id);
                 //fil_po[fil_po.length] = new nlobjSearchFilter('custrecord_job_franchisee', null, 'is', zee_id);
                 //fil_po[fil_po.length] = new nlobjSearchFilter('formulatext', null, 'is', zee_text).setFormula(strFormula);
 
