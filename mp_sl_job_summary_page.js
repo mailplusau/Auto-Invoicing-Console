@@ -216,7 +216,8 @@ function summary_page(request, response) {
             newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', start_date);
             newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorbefore', end_date);
         }
-        newFilters[newFilters.length] = new nlobjSearchFilter('formulatext', null, 'is', zee_text).setFormula(strFormula);
+        //newFilters[newFilters.length] = new nlobjSearchFilter('formulatext', null, 'is', zee_text).setFormula(strFormula);
+        newFilters[newFilters.length] = new nlobjSearchFilter("partner","CUSTRECORD_JOB_CUSTOMER", "anyof", zee);
 
         searchedSummary.addFilters(newFilters);
 
