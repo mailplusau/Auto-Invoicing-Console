@@ -196,7 +196,7 @@ function services_main_page(request, response) {
         inlineQty += '</div><br/><br/><br/><br/>';
 
         //PACKAGE SECTION - TO CHECK IF HEADING IS REQUIRED OR NOT
-        var searched_jobs = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_mainpage_2');
+        var searched_jobs = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_mainpage_3');
 
         var zee_record = nlapiLoadRecord('partner', zee);
         //nlapiLogExecution('DEBUG', 'zee', zee);
@@ -1110,7 +1110,7 @@ function services_main_page(request, response) {
         nlapiLogExecution('DEBUG', 'package_time', package_time - start_time);
 
         // nlapiLogExecution('DEBUG', 'invoice package section', total_invoice);
-        var searched_jobs = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_mainpage_2');
+        var searched_jobs = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_mainpage_3');
 
         var newFilters = new Array();
         newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
@@ -1603,7 +1603,7 @@ function services_main_page(request, response) {
 
         // nlapiLogExecution('AUDIT', 'services', total_invoice);
 
-        var searched_jobs_extras = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_mainpage_2');
+        var searched_jobs_extras = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_mainpage_3');
 
         var newFilters_extras = new Array();
         newFilters_extras[newFilters_extras.length] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);

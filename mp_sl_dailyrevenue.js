@@ -182,7 +182,7 @@ function daily_revenue(request, response) {
                     service_array = package_array[package_array.length - 1];
                     service_array[service_array.length] = operator;
                 } else if (old_package != package) {
-                    nlapiLogExecution('DEBUG', 'package', package);
+                    nlapiLogExecution('DEBUG', 'package', old_package);
                     nlapiLogExecution('DEBUG', 'package_array', package_array);
                     var package_revenue_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[0];
                     var package_service_count_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[1];
@@ -202,7 +202,7 @@ function daily_revenue(request, response) {
             } else if (discount_period == 1 || discount_period == 2) { //per day or per visit
                 if (perday_count == 0) {
                     if (old_discount_period == 3) { //save the last monthly package
-                        nlapiLogExecution('DEBUG', 'LAST MONTHLY package', package);
+                        nlapiLogExecution('DEBUG', 'LAST MONTHLY package', old_package);
                         nlapiLogExecution('DEBUG', 'package_array', package_array);
                         var package_revenue_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[0];
                         var package_service_count_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[1];
@@ -225,7 +225,7 @@ function daily_revenue(request, response) {
                         service_array = package_array[package_array.length - 1];
                         service_array[service_array.length] = operator;
                     } else if (old_package != package) {
-                        nlapiLogExecution('DEBUG', 'package', package);
+                        nlapiLogExecution('DEBUG', 'package', old_package);
                         nlapiLogExecution('DEBUG', 'package_array', package_array);
                         nlapiLogExecution('DEBUG', 'services_number', services_number);
                         var package_revenue_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[0];
@@ -243,7 +243,7 @@ function daily_revenue(request, response) {
                         nlapiLogExecution('DEBUG', 'services_number INITIALIZATION', services_number);
                     }
                 } else if (old_date_sch != date_sch) {
-                    nlapiLogExecution('DEBUG', 'package', package);
+                    nlapiLogExecution('DEBUG', 'package', old_package);
                     nlapiLogExecution('DEBUG', 'package_array', package_array);
                     nlapiLogExecution('DEBUG', 'services_number', services_number);
                     var package_revenue_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[0];
@@ -285,7 +285,7 @@ function daily_revenue(request, response) {
                         }
                         package_array = [];
                         monthly_count++;
-                    } else if (old_discount_period == 1 || old_discount_period == 2) {
+                    } else if (old_discount_period == 1 || old_discount_period == 2) { //save the last per day package
                         nlapiLogExecution('DEBUG', 'LAST package', old_package);
                         nlapiLogExecution('DEBUG', 'package_array', package_array);
                         nlapiLogExecution('DEBUG', 'services_number', services_number);
@@ -356,6 +356,7 @@ function daily_revenue(request, response) {
             old_operator = operator;
             return true;
         })
+        
 
         if (monthly_count > 0 || perday_count > 0 || multiOp_count > 0) {
             if (old_discount_period == 3) { //Monthly
