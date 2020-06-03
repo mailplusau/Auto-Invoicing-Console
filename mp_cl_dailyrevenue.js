@@ -29,7 +29,7 @@ function pageInit() {
         }
     }
 
-
+    //CALCULATE THE TOTALS
     for (i = 0; i < operator_id_array.length; i++) {
         var total = getTotal(operator_id_array[i]);
         console.log('total', total);
@@ -50,15 +50,17 @@ function onclick_back() {
     var start_date = nlapiGetFieldValue('start_date');
     var end_date = nlapiGetFieldValue('end_date');
 
-    console.log('zee', zee);
-    console.log('start_date', start_date);
-    console.log('end_date', end_date);
-
     var url = baseURL + "/app/site/hosting/scriptlet.nl?script=592&deploy=1";
     url += "&start_date=" + start_date + "&end_date=" + end_date + "&zee=" + zee;
     window.location.href = url;
 }
 
+
+/**
+* Get the total revenue and total service count for the operator given (sum all the rows of the tab)
+* @params {String} operator_name
+* @return {Array} - [total service count, total extra count, total revenue, total distribution]
+*/
 function getTotal(operator_name) {
     var service_count_total = 0;
     var extra_count_total = 0;

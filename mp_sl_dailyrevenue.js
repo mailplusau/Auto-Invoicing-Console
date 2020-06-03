@@ -20,7 +20,6 @@ if (nlapiGetContext().getEnvironment() == "SANDBOX") {
 function daily_revenue(request, response) {
     if (request.getMethod() == "GET") {
         var zee = request.getParameter('zee');
-        //var month = request.getParameter('month');
         var start_date = request.getParameter('start_date');
         var end_date = request.getParameter('end_date');
 
@@ -39,11 +38,11 @@ function daily_revenue(request, response) {
         nlapiLogExecution('DEBUG', 'today', today);
 
         var same_month = false;
-        if (today_month == start_date_array[1] && today_year == start_date_array[2]) {
+        if (today_month == start_date_array[1] && today_year == start_date_array[2]) { //if looking at current month, show from 1st day to today
             var start_date_dailyrevenue = start_date;
             var end_date_dailyrevenue = today;
             same_month = true;
-        } else {
+        } else { //if looking at previous month, show the entire month
             var start_date_dailyrevenue = start_date;
             var end_date_dailyrevenue = end_date;
         }
@@ -63,6 +62,8 @@ function daily_revenue(request, response) {
 
         var inlineQty = '<div><style>table#daily_revenue {font-size:12px; font-weight:bold; text-align:center; border-color:#24385b; display:block; overflow-x:auto; white-space:nowrap;}</style><table border="0" cellpadding="10" id="daily_revenue" cellspacing="0" class="table table-responsive table-striped table-bordered"><thead style="color: white;background-color: #607799;"><tr><th class="cell" style="text-align:left;"><b>Date</b></th>';
 
+
+        //Get the list of all operators of the zee
         var operatorSearch = nlapiLoadSearch('customrecord_operator', 'customsearch_rta_operator_load');
         var newFilters = new Array();
         newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_operator_franchisee', null, 'anyof', zee);
@@ -95,7 +96,6 @@ function daily_revenue(request, response) {
         }
         var newFilters = new Array();
         newFilters[newFilters.length] = new nlobjSearchFilter("custrecord_job_franchisee", null, 'anyof', zee);
-        //newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_service_package', null, 'noneof', '@NONE@');
         newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', start_date_dailyrevenue);
         newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorbefore', end_date_dailyrevenue);
         package_jobSearch.addFilters(newFilters);
@@ -106,8 +106,6 @@ function daily_revenue(request, response) {
 
         var workingdays = getWorkDays(start_date_array[1], start_date_array[2]);
         var workingdays_count = workingdays.length;
-        nlapiLogExecution('DEBUG', 'workingdays', workingdays);
-        nlapiLogExecution('DEBUG', 'workingdays_count', workingdays_count);
 
         var zee_comm = 1;
 
@@ -125,24 +123,26 @@ function daily_revenue(request, response) {
         var multiOp_count = 0;
         var services_number = 0;
 
+        //PERDAY OR PERVISIT PACKAGES - Arrays that will contains the revenue and service count per day for each operator
         var package_date_sch_array = [];
         var package_revenue_array = [];
         var package_operator_array = [];
         var package_service_count_array = [];
 
+        //MULTI OPERATORS SERVICES (NOT PACKAGES) - Arrays that will contains the revenue and service count per day for each operator
         var multiOp_date_sch_array = [];
         var multiOp_revenue_array = [];
         var multiOp_operator_array = [];
         var multiOp_service_count_array = [];
 
-
+        //Arrays with the revenue and service count for each operator for the day and package given. Those arrays are reset everytime the search is looking into another package or another date
         var date_sch_revenue_array = new Array(operator_array.length);
         var date_sch_service_count_array = new Array(operator_array.length);
 
+        //MONTHLY PACKAGES - Revenue and service count for each operator for one day - will appear everyday of the month
         var package_monthly_revenue_array = new Array(operator_array.length);
-
-        var package_operator_count_array = new Array(operator_array.length);
         var package_monthly_service_count_array = new Array(operator_array.length);
+
         for (i = 0; i < operator_array.length; i++) {
             package_monthly_revenue_array[i] = 0;
             package_monthly_service_count_array[i] = 0;
@@ -151,10 +151,10 @@ function daily_revenue(request, response) {
         }
         var package_operator_count = 1;
 
-        var package_array = new Array();
+        var package_array = new Array(); //for each service of the package, gives the list of operators [service1, opA, opB, service 2, opA]
+        var service_array = new Array(); //list of operators for the service [service1, opA, opB]
 
         package_jobSet.forEachResult(function(searchResult) {
-
             var package = searchResult.getValue('custrecord_job_service_package', null, 'group');
             var service = searchResult.getValue('custrecord_job_service', null, 'group');
             var date_sch = searchResult.getValue('custrecord_job_date_scheduled', null, 'group');
@@ -164,39 +164,33 @@ function daily_revenue(request, response) {
             var discount_period = searchResult.getValue("custrecord_service_package_disc_period", "CUSTRECORD_JOB_SERVICE_PACKAGE", "GROUP");
             zee_comm = parseFloat(searchResult.getValue("formulapercent", null, "GROUP"));
 
-            /*                nlapiLogExecution('DEBUG', 'package', package);
-                            nlapiLogExecution('DEBUG', 'discount_period', discount_period);
-                            nlapiLogExecution('DEBUG', 'fixed_rate_value', fixed_rate_value);*/
-
             if (discount_period == 3) { //Monthly
-                if (monthly_count == 0) {
+                if (monthly_count == 0) { //create the first package array
                     nlapiLogExecution('DEBUG', 'service', service);
                     package_array[package_array.length] = [service, operator];
                     services_number += 1;
-                    //nlapiLogExecution('DEBUG', 'services_number INITIALIZATION', services_number);
-                } else if (old_package == package && old_service != service) {
+                } else if (old_package == package && old_service != service) { //same package but different service
                     package_array[package_array.length] = [service, operator];
                     services_number += 1;
-                    //nlapiLogExecution('DEBUG', 'services_number INITIALIZATION', services_number);
-                } else if (old_package == package && old_service == service && old_operator != operator) {
+                } else if (old_package == package && old_service == service && old_operator != operator) { //same package, same service but different op
                     service_array = package_array[package_array.length - 1];
                     service_array[service_array.length] = operator;
-                } else if (old_package != package) {
-                    nlapiLogExecution('DEBUG', 'package', old_package);
-                    nlapiLogExecution('DEBUG', 'package_array', package_array);
+                } else if (old_package != package) { //calculate and store the revenue & service count per op for that package
+                    nlapiLogExecution('DEBUG', 'monthly package', old_package);
+                    nlapiLogExecution('DEBUG', 'monthly package_array', package_array);
                     var package_revenue_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[0];
                     var package_service_count_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[1];
-                    nlapiLogExecution('DEBUG', 'package_revenue_per_operator', package_revenue_per_operator);
-                    nlapiLogExecution('DEBUG', 'package_service_count_per_operator', package_service_count_per_operator);
+                    nlapiLogExecution('DEBUG', 'monthly package_revenue_per_operator', package_revenue_per_operator);
+                    nlapiLogExecution('DEBUG', 'monthly package_service_count_per_operator', package_service_count_per_operator);
                     for (i = 0; i < operator_array.length; i++) {
                         package_monthly_revenue_array[i] = package_monthly_revenue_array[i] + package_revenue_per_operator[i];
                         package_monthly_service_count_array[i] = package_monthly_service_count_array[i] + package_service_count_per_operator[i];
                     }
 
+                    //reset the package array for the next package
                     package_array = [];
                     package_array[package_array.length] = [service, operator];
                     services_number = 1;
-                    nlapiLogExecution('DEBUG', 'services_number INITIALIZATION', services_number);
                 }
                 monthly_count++;
             } else if (discount_period == 1 || discount_period == 2) { //per day or per visit
@@ -214,17 +208,17 @@ function daily_revenue(request, response) {
                         package_array = [];
                         monthly_count++;
                     }
-                    package_array[package_array.length] = [service, operator];
+                    package_array[package_array.length] = [service, operator]; //create the first package array
                     services_number = 1;
                 } else if (old_date_sch == date_sch) {
-                    nlapiLogExecution('DEBUG', 'same date');
-                    if (old_package == package && old_service != service) {
+                    if (old_package == package && old_service != service) { //same package but different service
                         package_array[package_array.length] = [service, operator];
                         services_number += 1;
-                    } else if (old_package == package && old_service == service && old_operator != operator) {
+                    } else if (old_package == package && old_service == service && old_operator != operator) { //same package, same service but different op
                         service_array = package_array[package_array.length - 1];
                         service_array[service_array.length] = operator;
-                    } else if (old_package != package) {
+                    } else if (old_package != package) { //calculate and store the revenue & service count per op for that package
+                        //Get the revenue/service count per operator for that package
                         nlapiLogExecution('DEBUG', 'package', old_package);
                         nlapiLogExecution('DEBUG', 'package_array', package_array);
                         nlapiLogExecution('DEBUG', 'services_number', services_number);
@@ -232,17 +226,19 @@ function daily_revenue(request, response) {
                         var package_service_count_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[1];
                         nlapiLogExecution('DEBUG', 'package_revenue_per_operator', package_revenue_per_operator);
                         nlapiLogExecution('DEBUG', 'package_service_count_per_operator', package_service_count_per_operator);
+                        //Add this revenue/service count to the total of revenue/service count for that day
                         for (i = 0; i < operator_array.length; i++) {
                             date_sch_revenue_array[i] = date_sch_revenue_array[i] + package_revenue_per_operator[i];
                             date_sch_service_count_array[i] = date_sch_service_count_array[i] + package_service_count_per_operator[i];
                         }
 
+                        //reset the package array for the next package
                         package_array = [];
                         package_array[package_array.length] = [service, operator];
                         services_number = 1;
-                        nlapiLogExecution('DEBUG', 'services_number INITIALIZATION', services_number);
                     }
                 } else if (old_date_sch != date_sch) {
+                    //Get the revenue/service count per operator for that package
                     nlapiLogExecution('DEBUG', 'package', old_package);
                     nlapiLogExecution('DEBUG', 'package_array', package_array);
                     nlapiLogExecution('DEBUG', 'services_number', services_number);
@@ -250,6 +246,7 @@ function daily_revenue(request, response) {
                     var package_service_count_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[1];
                     nlapiLogExecution('DEBUG', 'package_revenue_per_operator', package_revenue_per_operator);
                     nlapiLogExecution('DEBUG', 'package_service_count_per_operator', package_service_count_per_operator);
+                    //Add this revenue/service count to the total of revenue/service count for that day
                     for (i = 0; i < operator_array.length; i++) {
                         date_sch_revenue_array[i] = date_sch_revenue_array[i] + package_revenue_per_operator[i];
                         date_sch_service_count_array[i] = date_sch_service_count_array[i] + package_service_count_per_operator[i];
@@ -258,14 +255,15 @@ function daily_revenue(request, response) {
                     package_array = [];
                     package_array[package_array.length] = [service, operator];
                     services_number = 1;
-                    nlapiLogExecution('DEBUG', 'services_number INITIALIZATION', services_number);
 
+                    //When all the packages for the day have been counted, store the values for each operator in the packages array
                     for (i = 0; i < operator_array.length; i++) {
                         package_date_sch_array[package_date_sch_array.length] = old_date_sch;
                         package_operator_array[package_operator_array.length] = operator_array[i];
                         package_revenue_array[package_revenue_array.length] = date_sch_revenue_array[i];
                         package_service_count_array[package_service_count_array.length] = date_sch_service_count_array[i];
 
+                        //Reset the revenue and service count per day
                         date_sch_revenue_array[i] = 0;
                         date_sch_service_count_array[i] = 0;
                     }
@@ -275,17 +273,18 @@ function daily_revenue(request, response) {
                 if (multiOp_count == 0) {
                     if (old_discount_period == 3) { //save the last monthly package
                         nlapiLogExecution('DEBUG', 'LAST MONTHLY package', package);
-                        nlapiLogExecution('DEBUG', 'package_array', package_array);
+                        nlapiLogExecution('DEBUG', 'monthly package_array', package_array);
                         var package_revenue_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[0];
                         var package_service_count_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[1];
-                        nlapiLogExecution('DEBUG', 'package_revenue_per_operator', package_revenue_per_operator);
+                        nlapiLogExecution('DEBUG', 'monthly package_revenue_per_operator', package_revenue_per_operator);
+                        nlapiLogExecution('DEBUG', 'monthly package_service_count_per_operator', package_service_count_per_operator);
                         for (i = 0; i < operator_array.length; i++) {
                             package_monthly_revenue_array[i] += package_revenue_per_operator[i];
                             package_monthly_service_count_array[i] += package_service_count_per_operator[i];
                         }
                         package_array = [];
                         monthly_count++;
-                    } else if (old_discount_period == 1 || old_discount_period == 2) { //save the last per day package
+                    } else if (old_discount_period == 1 || old_discount_period == 2) { //save the last perday package
                         nlapiLogExecution('DEBUG', 'LAST package', old_package);
                         nlapiLogExecution('DEBUG', 'package_array', package_array);
                         nlapiLogExecution('DEBUG', 'services_number', services_number);
@@ -305,33 +304,39 @@ function daily_revenue(request, response) {
                         }
                     }
                     nlapiLogExecution('DEBUG', 'FIRST service', service);
-                    service_array = [service, operator];
+                    service_array = [service, operator]; //create the first service array
                 } else if (old_date_sch == date_sch) {
-                    if (old_service == service && old_operator != operator) {
+                    if (old_service == service && old_operator != operator) { //same service but different op
                         service_array[service_array.length] = operator;
-                    } else if (old_service != service) {
+                    } else if (old_service != service) { //calculate and store the revenue & service count for that service
+                        //Get the revenue/service count per operator for that service
                         nlapiLogExecution('DEBUG', 'service_array', service_array);
                         var service_revenue_per_operator = getServiceRevenuePerOp(operator_array, service_array, old_service_price)[0];
                         var service_count_per_operator = getServiceRevenuePerOp(operator_array, service_array, old_service_price)[1];
                         nlapiLogExecution('DEBUG', 'service_revenue_per_operator', service_revenue_per_operator);
                         nlapiLogExecution('DEBUG', 'service_count_per_operator', service_count_per_operator);
+                        //Add this revenue/service count to the total of revenue/service count for that day
                         for (i = 0; i < operator_array.length; i++) {
                             date_sch_revenue_array[i] = date_sch_revenue_array[i] + service_revenue_per_operator[i];
                             date_sch_service_count_array[i] = date_sch_service_count_array[i] + service_count_per_operator[i];
                         }
+
+                        //reset the service array for next service
                         service_array = [service, operator];
                     }
                 } else if (old_date_sch != date_sch) {
+                    //Get the revenue/service count per operator for that service
                     nlapiLogExecution('DEBUG', 'service_array', service_array);
                     var service_revenue_per_operator = getServiceRevenuePerOp(operator_array, service_array, old_service_price)[0];
                     var service_count_per_operator = getServiceRevenuePerOp(operator_array, service_array, old_service_price)[1];
                     nlapiLogExecution('DEBUG', 'service_revenue_per_operator', service_revenue_per_operator);
                     nlapiLogExecution('DEBUG', 'service_count_per_operator', service_count_per_operator);
+                    //Add this revenue/service count to the total of revenue/service count for that day
                     for (i = 0; i < operator_array.length; i++) {
                         date_sch_revenue_array[i] = date_sch_revenue_array[i] + service_revenue_per_operator[i];
                         date_sch_service_count_array[i] = date_sch_service_count_array[i] + service_count_per_operator[i];
                     }
-
+                    //When all the multiOp services for the day have been counted, store the values for each operator in the multiOp arrays
                     for (i = 0; i < operator_array.length; i++) {
                         multiOp_date_sch_array[multiOp_date_sch_array.length] = old_date_sch;
                         multiOp_operator_array[multiOp_operator_array.length] = operator_array[i];
@@ -356,16 +361,17 @@ function daily_revenue(request, response) {
             old_operator = operator;
             return true;
         })
-        
+
 
         if (monthly_count > 0 || perday_count > 0 || multiOp_count > 0) {
             if (old_discount_period == 3) { //Monthly
                 nlapiLogExecution('DEBUG', 'LAST monthly package', old_package);
-                nlapiLogExecution('DEBUG', 'package_array', package_array);
+                nlapiLogExecution('DEBUG', 'monthly package_array', package_array);
                 nlapiLogExecution('DEBUG', 'services_number', services_number);
                 var package_revenue_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[0];
                 var package_service_count_per_operator = getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number)[1];
                 nlapiLogExecution('DEBUG', 'package_revenue_per_operator', package_revenue_per_operator);
+                nlapiLogExecution('DEBUG', 'package_service_count_per_operator', package_service_count_per_operator);
                 for (i = 0; i < operator_array.length; i++) {
                     package_monthly_revenue_array[i] = package_monthly_revenue_array[i] + package_revenue_per_operator[i];
                     package_monthly_service_count_array[i] = package_monthly_service_count_array[i] + package_service_count_per_operator[i];
@@ -414,7 +420,7 @@ function daily_revenue(request, response) {
         nlapiLogExecution('DEBUG', 'package_time', Date.now() - start_time)
         start_time = Date.now();
 
-        //SERVICE & EXTRAS SECTION
+        //SERVICES & EXTRAS SECTION
         var jobSearch = nlapiLoadSearch('customrecord_job', 'customsearch_job_completed');
 
         var newFilters = new Array();
@@ -474,8 +480,6 @@ function daily_revenue(request, response) {
         nlapiLogExecution('DEBUG', 'extra_count_array', extra_count_array);
         nlapiLogExecution('DEBUG', 'extra_revenue_array', extra_revenue_array);
         nlapiLogExecution('DEBUG', 'extra_operator_array', extra_operator_array);
-        var extra_sum = sum(extra_revenue_array);
-        nlapiLogExecution('DEBUG', 'extra_sum', extra_sum);
 
         nlapiLogExecution('DEBUG', 'package_date_sch_array', package_date_sch_array);
         nlapiLogExecution('DEBUG', 'package_service_count_array', package_service_count_array);
@@ -484,20 +488,17 @@ function daily_revenue(request, response) {
 
         nlapiLogExecution('DEBUG', 'package_monthly_service_count_array', package_monthly_service_count_array);
         nlapiLogExecution('DEBUG', 'package_monthly_revenue_array', package_monthly_revenue_array);
-        //nlapiLogExecution('DEBUG', 'package_operator_count_array', package_operator_count_array);
 
         nlapiLogExecution('DEBUG', 'multiOp_date_sch_array', multiOp_date_sch_array);
         nlapiLogExecution('DEBUG', 'multiOp_service_count_array', multiOp_service_count_array);
         nlapiLogExecution('DEBUG', 'multiOp_revenue_array', multiOp_revenue_array);
         nlapiLogExecution('DEBUG', 'multiOp_operator_array', multiOp_operator_array);
 
-        start_time = Date.now();
+        //BUILD THE TAB TO DISPLAY THE RESULTS
         for (i = 0; i < workingdays_count; i++) {
             date = workingdays[i];
             var date_array = date.split('/');
             var date_day = date_array[0];
-            //nlapiLogExecution('DEBUG', 'date_day', date_day)
-            //nlapiLogExecution('DEBUG', 'today_day', today_day)
             if (same_month == true && date_day > today_day) {
                 break;
             }
@@ -587,6 +588,8 @@ function daily_revenue(request, response) {
         }
 
         inlineQty += '</tbody>';
+
+        //TOTAL SECTION
         inlineQty += '<tfoot style="color: white;background-color: #607799;">';
         inlineQty += '<tr><td style="text-align:center; font-size:medium; vertical-align:middle;">TOTAL</td>';
 
@@ -601,8 +604,6 @@ function daily_revenue(request, response) {
         inlineQty += '</tr>';
         inlineQty += '</tfoot></table></div>';
 
-        nlapiLogExecution('DEBUG', 'display time', Date.now() - start_time);
-
         form.addButton('Back', 'BACK', 'onclick_back()');
         form.setScript('customscript_cl_daily_revenue');
 
@@ -610,7 +611,6 @@ function daily_revenue(request, response) {
         form.addField('end_date', 'text', 'end_date').setDisplayType('hidden').setDefaultValue(request.getParameter('end_date'));
         form.addField('zee', 'text', 'zee').setDisplayType('hidden').setDefaultValue(zee);
         var operator_id_string = operator_id_array.join();
-        nlapiLogExecution('DEBUG', 'operator_string', operator_id_string);
         form.addField('operator_string', 'text', 'operator_string').setDisplayType('hidden').setDefaultValue(operator_id_string);
 
         form.addField('custpage_html2', 'inlinehtml').setPadding(1).setLayoutType('outsideabove').setDefaultValue(inlinehtml);
@@ -623,15 +623,37 @@ function daily_revenue(request, response) {
     }
 }
 
+
+/**
+ * Check the number of days in a month
+ * @params {Int} iMonth
+ * @params {Int} iYear
+ * @return {Int} - number of days (30, 31, 28 or 29)
+ */
 function getDaysInMonth(iMonth, iYear) {
     return 32 - new Date(iYear, iMonth - 1, 32).getDate();
 }
 
+
+/**
+ * Check if a day is a work day
+ * @params {Int} year
+ * @params {Int} month
+ * @params {Int} day
+ * @return {Boolean}
+ */
 function isWorkDay(year, month, day) {
     var dayOfWeek = new Date(year, month - 1, day).getDay();
     return dayOfWeek >= 1 && dayOfWeek <= 5; // Sun = 0, Mon = 1, and so forth
 }
 
+
+/**
+ * Gets the list of working days in a month, ignores public holidays
+ * @params {Int} month - number of the month
+ * @params {Int} year
+ * @return {Array} - list of the working days
+ */
 function getWorkDays(month, year) {
     var days = getDaysInMonth(month, year);
     var workdays = [];
@@ -648,19 +670,34 @@ function getWorkDays(month, year) {
     return workdays;
 }
 
-function sum(array) {
-    var sum = 0;
-    for (i = 0; i < array.length; i++) {
-        sum += array[i];
-    }
-    return sum;
-}
-
+/**
+ * Gives the name of the month
+ * @params {Int} month - number of the month minus one (from 0 to 11)
+ * @return {String} - name of the month
+ */
 function getMonthName(month) {
     var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     return monthList[month - 1];
 }
 
+/**
+ * Get today's date
+ * @return {String} - today's date
+ */
+function getDate() {
+    var date = new Date();
+    date = nlapiDateToString(date);
+    return date;
+}
+
+/**
+ * Gives the revenue per operator for this package
+ * @params {Array} operator_array - list of all the operators
+ * @params {Array} package_array - list of operators doing each service of the package. example : [service1, opA, opB, service 2, opA]
+ * @params {Float} old_fixed_rate_value - price of the package
+ * @params {Int} services_number - number of services performed in the package
+ * @return {Array} - List of 2 lists : the revenue per Op and the service count per Op for this package
+ */
 function getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_value, services_number) {
     var service_rate = old_fixed_rate_value / services_number;
     var operator_revenue_array = new Array();
@@ -669,20 +706,6 @@ function getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_va
         operator_revenue_array[k] = 0;
         operator_service_count_array[k] = 0;
     }
-    /*    nlapiLogExecution('DEBUG', 'services_number', services_number)
-        if (services_number == 1) { //only 1 service in the package or no package but multiple operators
-            var op_number = package_array.length - 1;
-            nlapiLogExecution('DEBUG', 'package_array.length', package_array.length)
-            if (package_array.length ==1){
-                package_array = package_array[0];
-            }
-            for (i = 1; i < package_array.length; i++) {
-                var op = package_array[i];
-                nlapiLogExecution('DEBUG', 'op', op)
-                operator_revenue_array[operator_array.indexOf(op)] += service_rate / op_number;
-                operator_service_count_array[operator_array.indexOf(op)] += 1 / op_number;
-            }
-        } else { //several services in the package*/
     for (i = 0; i < package_array.length; i++) {
         //nlapiLogExecution('DEBUG', 'package_array[i]', package_array[i])
         var op_number = package_array[i].length - 1;
@@ -693,10 +716,17 @@ function getPackageRevenuePerOp(operator_array, package_array, old_fixed_rate_va
             operator_service_count_array[operator_array.indexOf(op)] += 1 / op_number;
         }
     }
-    //}
     return [operator_revenue_array, operator_service_count_array]
 }
 
+
+/**
+ * Gives the revenue per operator for this service (in the case of multiple operators performing the service)
+ * @params {Array} operator_array - list of all the operators
+ * @params {Array} service_array - list of operators doing the service. example : [service1, opA, opB]
+ * @params {Float} old_service_price - price of the service
+ * @return {Array} - List of 2 lists : the revenue per Op and the service count per Op for this service
+ */
 function getServiceRevenuePerOp(operator_array, service_array, old_service_price) {
     var operator_revenue_array = new Array();
     var operator_service_count_array = new Array();
