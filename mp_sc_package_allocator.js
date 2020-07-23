@@ -6,8 +6,8 @@
  *
  * Remarks: Allocate Jobs to Pre defined packages setup by the Zees        
  * 
- * @Last Modified by:   mailplusar
- * @Last Modified time: 2019-05-07 09:50:41
+ * @Last Modified by:   Ankith
+ * @Last Modified time: 2020-07-17 14:43:27
  *
  */
 
@@ -39,7 +39,7 @@ function main(type) {
 	var service_ids_array = [];
 
 	/**
-	 * Job - Package Allocator (Customer)
+	 * AIC - Package - Customer (DO NOT DELETE)	
 	 */
 	var searched_jobs = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_allocator_cus');
 
