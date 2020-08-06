@@ -535,7 +535,7 @@ function summary_page(request, response) {
                             }
 
                         } else {
-                            inlineQty += '<td><div class="input-group"><span class="input-group-addon">$</span><input type="number" style="text-align:right;" class="form-control total_monthly_invoice" value="' + (old_invoice_total).toFixed(2) + '" readonly /></div></td><td>UNCALCULATED</td>';
+                            inlineQty += '<td><div class="input-group"><span class="input-group-addon">$</span><input type="number" style="text-align:right;" class="form-control total_monthly_invoice" value="' + (old_invoice_total).toFixed(2) + '" readonly /></div></td><td><div class="input-group"><span class="input-group-addon">$</span><input type="number" style="text-align:right;" class="form-control total_monthly_invoice" value="' + (total_comm_per_customer).toFixed(2) + '" readonly /></div></td>';
                             if (isNullorEmpty(old_invoice_id)) {
                                 inlineQty += '<td>NO INVOICE</td></tr>';
                             } else {
@@ -715,7 +715,7 @@ function summary_page(request, response) {
                                 }
 
                             } else {
-                                inlineQty += '<td><div class="input-group"><span class="input-group-addon">$</span><input type="number" style="text-align:right;" class="form-control total_monthly_invoice" value="' + (old_invoice_total).toFixed(2) + '" readonly /></div></td><td>UNCALCULATED</td>';
+                                inlineQty += '<td><div class="input-group"><span class="input-group-addon">$</span><input type="number" style="text-align:right;" class="form-control total_monthly_invoice" value="' + (old_invoice_total).toFixed(2) + '" readonly /></div></td><td><div class="input-group"><span class="input-group-addon">$</span><input type="number" style="text-align:right;" class="form-control total_monthly_invoice" value="' + (total_comm_per_customer).toFixed(2) + '" readonly /></div></td>';
                                 if (isNullorEmpty(old_invoice_id)) {
                                     inlineQty += '<td>NO INVOICE</td></tr>';
                                 } else {
@@ -1129,7 +1129,7 @@ function summary_page(request, response) {
                     }
 
                 } else {
-                    inlineQty += '<td><div class="input-group"><span class="input-group-addon">$</span><input type="number" style="text-align:right;" class="form-control total_monthly_invoice" value="' + (old_invoice_total).toFixed(2) + '" readonly /></div></td><td>UNCALCULATED</td>';
+                    inlineQty += '<td><div class="input-group"><span class="input-group-addon">$</span><input type="number" style="text-align:right;" class="form-control total_monthly_invoice" value="' + (old_invoice_total).toFixed(2) + '" readonly /></div></td><td><div class="input-group"><span class="input-group-addon">$</span><input type="number" style="text-align:right;" class="form-control total_monthly_invoice" value="' + (total_comm_per_customer).toFixed(2) + '" readonly /></div></td>';
                     if (isNullorEmpty(old_invoice_id)) {
                         inlineQty += '<td>NO INVOICE</td></tr>';
                     } else {
