@@ -1233,9 +1233,15 @@ function summary_page(request, response) {
                     //DONT SHOW FINALISE BUTTON
                 } else {
                     // if (role == 3) {
-                    form.addSubmitButton('FINALISE');
-                    form.addButton('finalise', 'FINALISE', 'onclick_Finalise()');
+
                     // }
+                    if (role == 3) {
+                        form.addSubmitButton('FINALISE');
+                        form.addButton('run_finalise', 'RUN FINALISE SCRIPT', 'onclick_Finalise()');
+                    } else {
+                        form.addSubmitButton('FINALISE');
+                        form.addButton('finalise', 'FINALISE', 'onclick_Finalise()');
+                    }
                 }
             }
         } else if (edit_count == 0 && countCustomers != 0) {
@@ -1244,7 +1250,10 @@ function summary_page(request, response) {
             form.addButton('cust_back1', 'CONTINUE REVIEW', 'onclickContinueReview()');
         }
 
-
+        if (role == 3) {
+            form.addSubmitButton('FINALISE');
+            form.addButton('run_finalise', 'RUN FINALISE SCRIPT', 'onclick_Finalise()');
+        }
 
         form.setScript('customscript_cl_summary_page');
 
@@ -1283,21 +1292,24 @@ function summary_page(request, response) {
         /**
          * [status description] -  Schedule Script to set the date Invoiced for all the jobs associated to the franchisee for that invoicing period.
          */
+        if (role == 3) {
+            for (var x = 1; x <= 10; x++) {
+                var status = nlapiScheduleScript('customscript_sc_date_inv_finalised', 'customdeploy' + x, params);
 
-        // for (var x = 1; x <= 10; x++) {
-        // var status = nlapiScheduleScript('customscript_sc_date_inv_finalised', 'customdeploy' + x, params);
+                if (status == 'QUEUED') {
+                    break;
+                }
+            }
+        }
 
-        // if (status == 'QUEUED') {
-        nlapiSendEmail(112209, ['ankith.ravindran@mailplus.com.au'], 'Invoicing Complete: ' + partner, null, null);
+        // nlapiSendEmail(112209, ['ankith.ravindran@mailplus.com.au'], 'Invoicing Complete: ' + partner, null, null);
         var params = new Array();
         params['custevent_invoicing_complete'] = 'T';
         nlapiSetRedirectURL('RECORD', 'task',
             null,
             true,
             params);
-        // break;
-        // }
-        // }
+
         // var status = nlapiScheduleScript('customscript_sc_date_inv_finalised', 'customdeploy1', params);
         // nlapiLogExecution('AUDIT', 'status', status);
         // if (status == 'QUEUED') {
