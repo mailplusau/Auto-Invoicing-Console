@@ -207,9 +207,9 @@ function services_main_page(request, response) {
 
         var newFilters = new Array();
         newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
-/*        if (role != 3 && role != 1032) {
-            newFilters[newFilters.length] = new nlobjSearchFilter('formulatext', null, 'is', zee_text).setFormula(strFormula);
-        }*/
+        /*        if (role != 3 && role != 1032) {
+                    newFilters[newFilters.length] = new nlobjSearchFilter('formulatext', null, 'is', zee_text).setFormula(strFormula);
+                }*/
         newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_service_package', null, 'noneof', '@NONE@');
         if (!isNullorEmpty(request.getParameter('start_date')) && !isNullorEmpty(request.getParameter('end_date'))) {
 
@@ -1114,9 +1114,9 @@ function services_main_page(request, response) {
 
         var newFilters = new Array();
         newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
-/*        if (role != 3 && role != 1032) {
-            newFilters[newFilters.length] = new nlobjSearchFilter('formulatext', null, 'is', zee_text).setFormula(strFormula);
-        }*/
+        /*        if (role != 3 && role != 1032) {
+                    newFilters[newFilters.length] = new nlobjSearchFilter('formulatext', null, 'is', zee_text).setFormula(strFormula);
+                }*/
 
         newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_service_category', null, 'is', 1);
         newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_service_package', null, 'anyof', '@NONE@');
@@ -1607,9 +1607,9 @@ function services_main_page(request, response) {
 
         var newFilters_extras = new Array();
         newFilters_extras[newFilters_extras.length] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
-/*        if (role != 3 && role != 1032) {
-            newFilters_extras[newFilters_extras.length] = new nlobjSearchFilter('formulatext', null, 'is', zee_text).setFormula(strFormula);
-        }*/
+        /*        if (role != 3 && role != 1032) {
+                    newFilters_extras[newFilters_extras.length] = new nlobjSearchFilter('formulatext', null, 'is', zee_text).setFormula(strFormula);
+                }*/
         newFilters_extras[newFilters_extras.length] = new nlobjSearchFilter('custrecord_job_service_category', null, 'anyof', [2, 3]);
         newFilters_extras[newFilters_extras.length] = new nlobjSearchFilter('custrecord_job_service_package', null, 'anyof', '@NONE@');
         if (!isNullorEmpty(request.getParameter('start_date')) && !isNullorEmpty(request.getParameter('end_date'))) {
@@ -2143,7 +2143,7 @@ function services_main_page(request, response) {
 
                 //WS Edit: searched_jobs_extras does not seem like an appropriate variable name for the search, we are not searching for extras.
                 var search_unreviewed = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_exp_amt');
-                var zee_text = nlapiLoadRecord('partner',zee_id).getFieldValue('entitytitle');
+                var zee_text = nlapiLoadRecord('partner', zee_id).getFieldValue('entitytitle');
 
                 var strFormula = "COALESCE({custrecord_job_service.custrecord_service_franchisee},{custrecord_job_group.custrecord_jobgroup_franchisee},{custrecord_job_franchisee},'')";
 
@@ -2154,7 +2154,7 @@ function services_main_page(request, response) {
                 fil_po[fil_po.length] = new nlobjSearchFilter('formuladate', null, 'isempty').setFormula(strFormula2);
                 fil_po[fil_po.length] = new nlobjSearchFilter('custrecord_job_date_inv_finalised', null, 'isempty');
                 fil_po[fil_po.length] = new nlobjSearchFilter('custrecord_job_customer', null, 'noneof', customer);
-                fil_po[fil_po.length] = new nlobjSearchFilter("partner","CUSTRECORD_JOB_CUSTOMER", 'is', zee_id);
+                fil_po[fil_po.length] = new nlobjSearchFilter("partner", "CUSTRECORD_JOB_CUSTOMER", 'is', zee_id);
                 //fil_po[fil_po.length] = new nlobjSearchFilter('custrecord_job_franchisee', null, 'is', zee_id);
                 //fil_po[fil_po.length] = new nlobjSearchFilter('formulatext', null, 'is', zee_text).setFormula(strFormula);
 
