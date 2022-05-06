@@ -5,7 +5,7 @@
  * @Date:   2022-04-29T13:58:14+10:00
  * @Filename: mp_ss2.0_auto_complete_jobs.js
  * @Last modified by:   ankithravindran
- * @Last modified time: 2022-05-03T08:29:31+10:00
+ * @Last modified time: 2022-05-06T09:19:56+10:00
  */
 
 
@@ -85,9 +85,16 @@ define(['N/task', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/format',
 					type: 'customrecord_job',
 					id: jobInternalID
 				});
+				var timeScheduled = appJobRecord.getValue({
+					fieldId: 'custrecord_job_time_scheduled'
+				});
 				appJobRecord.setValue({
 					fieldId: 'custrecord_job_date_finalised',
 					value: getDateToday()
+				});
+				appJobRecord.setValue({
+					fieldId: 'custrecord_job_time_finalised',
+					value: timeScheduled
 				});
 				appJobRecord.setValue({
 					fieldId: 'custrecord_job_status',
