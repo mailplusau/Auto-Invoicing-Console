@@ -7,7 +7,7 @@
  * Remarks:         
  * 
  * @Last Modified by:   mailplusar
- * @Last Modified time: 2019-05-07 09:49:26
+ * @Last Modified time: 2018-04-05 10:12:34
  *
  */
 
@@ -60,7 +60,7 @@ function invoiceCreation() {
 		var resultSet_summary = searched_summary.runSearch();
 
 
-		resultSet_summary.forEachResult(function(searchResult_summary) {
+		resultSet_summary.forEachResult(function (searchResult_summary) {
 
 			var usage_loopstart_cust = ctx.getRemainingUsage();
 			count_loop_cust++;
@@ -83,7 +83,7 @@ function invoiceCreation() {
 
 			if (result_customer == -1 && result_specialCustomer == -1) {
 				/*
-			    To check if the Job - Invoicing Review - Invoiceable Discrepancies search for the customer, if present do not run the allocator
+				To check if the Job - Invoicing Review - Invoiceable Discrepancies search for the customer, if present do not run the allocator
 				*/
 				var searched_job_group_inv_review_descp = nlapiLoadSearch('customrecord_job', 'customsearch_job_inv_review_inv_discrep');
 
@@ -103,7 +103,7 @@ function invoiceCreation() {
 				var result_job_group_inv_review_descp = resultSet_job_group_inv_review_descp.getResults(0, 1);
 
 				/*
-				    If Empty and result is 0, then the package allocator runs
+					If Empty and result is 0, then the package allocator runs
 				*/
 				try {
 					if (result_job_group_inv_review_descp.length == 0) {
@@ -151,7 +151,7 @@ function invoiceCreation() {
 
 						var zee_id;
 
-						resultSet_zee.forEachResult(function(searchResult_zee) {
+						resultSet_zee.forEachResult(function (searchResult_zee) {
 
 							zee_id = searchResult_zee.getValue('internalid');
 							count_zee++;
@@ -199,10 +199,11 @@ function invoiceCreation() {
 
 							recInvoice.setFieldValue('department', nlapiLoadRecord('partner', franchisee).getFieldValue('department'));
 							recInvoice.setFieldValue('location', nlapiLoadRecord('partner', franchisee).getFieldValue('location'));
-							recInvoice.setFieldValue('trandate', invoice_date());
+							// recInvoice.setFieldValue('trandate', invoice_date());
+							recInvoice.setFieldValue('trandate', '30/06/2022');
 							recInvoice.setFieldValue('custbody_dont_update_trandate', "T");
-							recInvoice.setFieldValue('custbody_inv_date_range_from', service_start_date);
-							recInvoice.setFieldValue('custbody_inv_date_range_to', service_end_date);
+							recInvoice.setFieldValue('custbody_inv_date_range_from', '1/6/2022');
+							recInvoice.setFieldValue('custbody_inv_date_range_to', '30/6/2022');
 
 							recInvoice.setFieldValue('partner', franchisee);
 
@@ -240,7 +241,7 @@ function invoiceCreation() {
 
 							var global_inv_line_count = 0;
 
-							resultSet_singleline_jobs.forEachResult(function(searchResult_singleline_jobs) {
+							resultSet_singleline_jobs.forEachResult(function (searchResult_singleline_jobs) {
 
 								nlapiLogExecution('DEBUG', 'INSIDE SINGLE LINE SEARCH', '');
 
@@ -334,7 +335,7 @@ function invoiceCreation() {
 
 							var count = 0;
 
-							resultSet_jobs.forEachResult(function(searchResult_jobs) {
+							resultSet_jobs.forEachResult(function (searchResult_jobs) {
 
 								nlapiLogExecution('DEBUG', 'INSIDE OF INVOICEABLE SEARCH', '');
 
@@ -628,7 +629,7 @@ function updateJobs(customer_internal_id, invoiceId, service_start_date, service
 
 	var reschedule;
 
-	resultSet_alljobs.forEachResult(function(searchResult_alljobs) {
+	resultSet_alljobs.forEachResult(function (searchResult_alljobs) {
 
 		var usage_loopstart_job = ctx.getRemainingUsage();
 		count_loop_job++;

@@ -37,12 +37,12 @@ if (role == 1000) {
 var global_customer;
 var global_locked = null;
 
-$(window).load(function() {
+$(window).load(function () {
     // Animate loader off screen
     $(".se-pre-con").fadeOut("slow");;
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
 });
 
@@ -84,34 +84,34 @@ function clientPageInit(type) {
         document.getElementById('tdbody_reviewed').style.display = 'none';
         $('.admin_fees_on').prop('disabled', true);
         $('.admin_fees_off').prop('disabled', true);
-        $('.invoiceable_qty').prop('disabled', function(i, v) {
+        $('.invoiceable_qty').prop('disabled', function (i, v) {
             return !v;
         });
-        $('.admin_fees_rate').prop('disabled', function(i, v) {
+        $('.admin_fees_rate').prop('disabled', function (i, v) {
             return !v;
         });
-        $('.admin_fees_qty').prop('disabled', function(i, v) {
+        $('.admin_fees_qty').prop('disabled', function (i, v) {
             return !v;
         });
-        $('.job_description').prop('disabled', function(i, v) {
+        $('.job_description').prop('disabled', function (i, v) {
             return !v;
         });
-        $('.single_job_description').prop('disabled', function(i, v) {
+        $('.single_job_description').prop('disabled', function (i, v) {
             return !v;
         });
-        $('.add_services').prop('disabled', function(i, v) {
+        $('.add_services').prop('disabled', function (i, v) {
             return !v;
         });
-        $('.fixed_discount_value').prop('disabled', function(i, v) {
+        $('.fixed_discount_value').prop('disabled', function (i, v) {
             return !v;
         });
-        $('.fixed_discount_qty').prop('disabled', function(i, v) {
+        $('.fixed_discount_qty').prop('disabled', function (i, v) {
             return !v;
         });
-        $('.total_package_value').prop('disabled', function(i, v) {
+        $('.total_package_value').prop('disabled', function (i, v) {
             return !v;
         });
-        $('.customer_po').prop('disabled', function(i, v) {
+        $('.customer_po').prop('disabled', function (i, v) {
             return !v;
         });
     }
@@ -135,24 +135,24 @@ function clientPageInit(type) {
 
 }
 
-$(document).on('click', '.instruction_button', function(e) {
+$(document).on('click', '.instruction_button', function (e) {
 
     $('.table_start').css("padding-top", "300px");
     $('.instruction_button').hide();
 });
 
-$('#exampleModal').on('show.bs.modal', function(event) {
+$('#exampleModal').on('show.bs.modal', function (event) {
     var button = $(event).relatedTarget // Button that triggered the modal
     var recipient = button.data('whatever') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
     var modal = $(this)
     modal.find('.modal-title').text('New message to ' + recipient)
     modal.find('.modal-body input').val(recipient)
 });
 
-$(document).ready(function() {
-    $(".modal_display").click(function() {
+$(document).ready(function () {
+    $(".modal_display").click(function () {
         var link = $(this).data("whatever");
         // console.log(link);
         $('.modal .modal-header').html('<div class="form-group"><h4><label class="control-label" for="inputError1">Information</label></h4></div>');
@@ -169,7 +169,7 @@ $(document).ready(function() {
 /**
  * [description] - On click of the '+', open up the App Qty fields
  */
-$(document).on('click', '.collapse_appqty', function(e) {
+$(document).on('click', '.collapse_appqty', function (e) {
     $('.col_collapse_appqty').show();
     $('.header_collapse').show();
     $('.discount_collpase_appqty').show();
@@ -187,7 +187,7 @@ $(document).on('click', '.collapse_appqty', function(e) {
 /**
  * [description] - On click of the '+' for the second time, show the invoiceable qty fields
  */
-$(document).on('click', '.invoiceableqty_collapse', function(e) {
+$(document).on('click', '.invoiceableqty_collapse', function (e) {
     $('.invoiceable_qty_collpase').show();
     $('.invoiceableqty_collapse').hide();
     // $('.package_name_row').attr('colspan',11);
@@ -198,7 +198,7 @@ $(document).on('click', '.invoiceableqty_collapse', function(e) {
 /**
  * [description] - On click of the '-', collapse all the App Qty and Invoiceable Qty fields
  */
-$(document).on('click', '.collapse_all', function(e) {
+$(document).on('click', '.collapse_all', function (e) {
     $('.col_collapse_appqty').hide();
     $('.collapse_appqty').show();
     $('.invoiceable_qty_collpase').show();
@@ -217,7 +217,7 @@ $(document).on('click', '.collapse_all', function(e) {
 });
 
 //DO CALCULATIONS IF THE DISCUNT QTY IN THE DISCOUNT ROW IS CHANGED
-$(document).on('blur', '.discount_qty', function(e) {
+$(document).on('blur', '.discount_qty', function (e) {
     var discount_value = $(this).closest('tr').find('.discount_value').val();
     var discount_qty = $(this).val();
     var attr_fixed = $(this).attr('package-fixed');
@@ -311,7 +311,7 @@ $(document).on('blur', '.discount_qty', function(e) {
 });
 
 //ON CHANGE OF THE INVOICEABLE QTY FOR THE SERVICES AND EXTRAS SECTION
-$(document).on('blur', '.invoiceable_qty', function(e) {
+$(document).on('blur', '.invoiceable_qty', function (e) {
 
     var invoiceable_qty = $(this).val();
     if (isNullorEmpty(invoiceable_qty)) {
@@ -320,6 +320,7 @@ $(document).on('blur', '.invoiceable_qty', function(e) {
     }
     var old_qty = $(this).attr('data-oldqty');
     var rate = $(this).attr('data-rate');
+    var serviceId = $(this).attr('data-serviceid');
     var app_qty = $(this).closest('tr').find('.app_qty').val();
     var netsuite_qty = $(this).closest('tr').find('.package_netsuite_qty').val();
     var total_inv_qty = parseFloat(app_qty) + parseFloat(netsuite_qty);
@@ -327,14 +328,45 @@ $(document).on('blur', '.invoiceable_qty', function(e) {
     if (invoiceable_qty >= 0) {
         if (invoiceable_qty == 0) {
             if (app_qty > 0) {
-                alert('Cannot reduce quantity below ' + app_qty + '. \nTo reduce the quantity, please click on the App Jobs and set \"DO YOU WANT TO INVOICE JOB GROUP??\" to \"No\"');
-                $(this).val(app_qty);
-                $(this).closest('tr').find('.package_netsuite_qty').val(0);
-                var total_rate = updateServiceAmount(parseFloat(rate), parseFloat(app_qty));
+                var completedJobsThisMonthSearch = nlapiLoadSearch('customrecord_job', 'customsearch_aic_completed_jobs_this_mon');
+
+                var newFiltersCompletedJobs = new Array();
+                newFiltersCompletedJobs[newFiltersCompletedJobs.length] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', global_customer);
+                newFiltersCompletedJobs[newFiltersCompletedJobs.length] = new nlobjSearchFilter('custrecord_job_service', null, 'is', serviceId);
+                newFiltersCompletedJobs[newFiltersCompletedJobs.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', (nlapiGetFieldValue('start_date')));
+                newFiltersCompletedJobs[newFiltersCompletedJobs.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorbefore', (nlapiGetFieldValue('end_date')));
+
+                completedJobsThisMonthSearch.addFilters(newFiltersCompletedJobs);
+
+                var resultSetCompletedJobs = completedJobsThisMonthSearch.runSearch();
+
+                resultSetCompletedJobs.forEachResult(function (searchResult) {
+
+                    var appJobId = searchResult.getValue('internalid');
+
+                    var recAppJobs = nlapiLoadRecord('customrecord_job', appJobId);
+                    recAppJobs.setFieldValue('custrecord_job_invoiceable', 2);
+
+                    nlapiSubmitRecord(recAppJobs);
+
+                    return true;
+                });
+
+                // alert('Cannot reduce quantity below ' + app_qty + '. \nTo reduce the quantity, please click on the App Jobs and set \"DO YOU WANT TO INVOICE JOB GROUP??\" to \"No\"');
+                // $(this).val(app_qty);
+                // $(this).closest('tr').find('.package_netsuite_qty').val(0);
+                // var total_rate = updateServiceAmount(parseFloat(rate), parseFloat(app_qty));
+                // $(this).closest('tr').find('.service_total_value').val(roundTwoDec(total_rate));
+                // $(this).closest('tr').find('.service_total_value').focus();
+                // $(this).closest('tr').find('.service_total').val((total_rate));
+                // return false;
+                var new_netsuite_qty = parseFloat(invoiceable_qty);
+                $(this).closest('tr').find('.package_netsuite_qty').val(new_netsuite_qty);
+                var total_rate = updateServiceAmount(parseFloat(rate), parseFloat(invoiceable_qty));
                 $(this).closest('tr').find('.service_total_value').val(roundTwoDec(total_rate));
                 $(this).closest('tr').find('.service_total_value').focus();
                 $(this).closest('tr').find('.service_total').val((total_rate));
-                return false;
+
             } else {
                 var new_netsuite_qty = parseFloat(invoiceable_qty);
                 $(this).closest('tr').find('.package_netsuite_qty').val(new_netsuite_qty);
@@ -376,7 +408,7 @@ $(document).on('blur', '.invoiceable_qty', function(e) {
     updateTotal();
 });
 
-$(document).on('blur', '.total_package_value', function(e) {
+$(document).on('blur', '.total_package_value', function (e) {
     var total_value = $(this).val();
     // var old_total_discount_value = $(this).closest('tr').find('.total_discount_value').val();
     var package_value = $(this).closest('tr').find('.package_value').val();
@@ -393,7 +425,7 @@ $(document).on('blur', '.total_package_value', function(e) {
 });
 
 //ON CHANGE OF THE FIXED RATE QTY
-$(document).on('blur', '.fixed_discount_qty', function(e) {
+$(document).on('blur', '.fixed_discount_qty', function (e) {
     var discount_value = $(this).closest('tr').find('.fixed_discount_value').val();
     var discount_qty = $(this).val();
     var attr_fixed = $(this).attr('package-fixed');
@@ -509,12 +541,12 @@ $(document).on('blur', '.fixed_discount_qty', function(e) {
 });
 
 //GET THE OLD VALUE OF THE DISCOUNT VALUE.
-$(document).on('focusin', '.discount_value', function() {
+$(document).on('focusin', '.discount_value', function () {
     $(this).data('oldval', $(this).val());
 });
 
 //ON CHANGE OF THE DISCOUNT VALUE
-$(document).on('blur', '.discount_value', function(e) {
+$(document).on('blur', '.discount_value', function (e) {
     var discount_qty = $(this).closest('tr').find('.discount_qty').val();
     var discount_value = $(this).val();
     var old_discount_value = $(this).data('oldval');
@@ -562,12 +594,12 @@ $(document).on('blur', '.discount_value', function(e) {
 });
 
 //GET THE OLD FIXED RATE
-$(document).on('focusin', '.fixed_discount_value', function() {
+$(document).on('focusin', '.fixed_discount_value', function () {
     $(this).data('oldval', $(this).val());
 });
 
 //ON CHANGE OF THE FIXED RATE VALUE
-$(document).on('blur', '.fixed_discount_value', function(e) {
+$(document).on('blur', '.fixed_discount_value', function (e) {
     var discount_qty = $(this).closest('tr').find('.fixed_discount_qty').val();
     var discount_value = $(this).val();
     var old_discount_value = $(this).data('oldval');
@@ -612,7 +644,7 @@ $(document).on('blur', '.fixed_discount_value', function(e) {
 });
 
 //ON CHANGE OF THE DISCOUNT TYPE, HIDE OR SHOW THE DISCOUNT QTY
-$(document).on("change", ".discount_type", function(e) {
+$(document).on("change", ".discount_type", function (e) {
 
     var discount_type = $(this).val();
     //IF THE DISCOUNT TYPE IS $, SHOW THE DISCOUNT QTY
@@ -625,10 +657,10 @@ $(document).on("change", ".discount_type", function(e) {
 });
 
 //ON CHANGE OF THE INVOICE SINGLE LINE 
-$(document).on("change", ".invoice_single_line", function(e) {
+$(document).on("change", ".invoice_single_line", function (e) {
 
     var packageid;
-    $('option:selected', this).each(function() {
+    $('option:selected', this).each(function () {
         packageid = ($(this).data('packageid'));
     });
     var value = $(this).val();
@@ -725,7 +757,7 @@ function setReviewDate(internal_id) {
     var resultSet = searched_jobs.runSearch();
 
 
-    resultSet.forEachResult(function(searchResult) {
+    resultSet.forEachResult(function (searchResult) {
 
         var job_record = nlapiLoadRecord('customrecord_job', searchResult.getValue('internalid'));
 
@@ -764,7 +796,7 @@ function updateServiceAmount(rate, qty) {
 /**
  * [description] - To show the Invoice Preview modal
  */
-$(document).on('click', '.preview_row', function(event) {
+$(document).on('click', '.preview_row', function (event) {
 
     var discount_type_elem = document.getElementsByClassName("discount_type");
     var discount_value_elem = document.getElementsByClassName("discount_value");
@@ -1100,7 +1132,7 @@ $(document).on('click', '.preview_row', function(event) {
 /**
  * [description] - To update the Admin Fees Total when the rate is changed
  */
-$(document).on('blur', '.admin_fees_rate', function(e) {
+$(document).on('blur', '.admin_fees_rate', function (e) {
     var admin_fees = $(this).val();
     var serviceid = $(this).attr('data-serviceid');
     var jobid = $(this).attr('data-jobid');
@@ -1134,7 +1166,7 @@ $(document).on('blur', '.admin_fees_rate', function(e) {
 /**
  * [description] - To update the Admin Fees Total when the qty is changed
  */
-$(document).on('blur', '.admin_fees_qty', function(e) {
+$(document).on('blur', '.admin_fees_qty', function (e) {
     var admin_fees_qty = $(this).val();
     var admin_fees = $(this).closest('tr').find('.admin_fees_rate').val();
 
@@ -1149,7 +1181,7 @@ $(document).on('blur', '.admin_fees_qty', function(e) {
 /**
  * [description] - Css and toggle between the On/Off Button for Admin Fee
  */
-$('.btn-toggle').click(function() {
+$('.btn-toggle').click(function () {
 
     // alert(nlapiGetFieldValue('admin_fees_not_applicable'));
     if (global_locked != 'yes' && nlapiGetFieldValue('admin_fees_not_applicable') != '1') {
@@ -1170,7 +1202,7 @@ $('.btn-toggle').click(function() {
 /**
  * [description] - To show the Admin Fee Row
  */
-$('.admin_fees_on').click(function() {
+$('.admin_fees_on').click(function () {
     $('.admin_fees_row').show();
     $('.no_extras_class').hide();
 
@@ -1205,7 +1237,7 @@ $('.admin_fees_on').click(function() {
 /**
  * [description] - To hide the Admin Fee Row
  */
-$('.admin_fees_off').click(function() {
+$('.admin_fees_off').click(function () {
     $('.admin_fees_row').hide();
     // $('.admin_fees_rate').val(0);
     // $('.admin_fees_qty').val(0);
@@ -1280,7 +1312,7 @@ function saveRecord() {
     var count_commReg = 0;
     var commReg = null;
 
-    comm_reg_results.forEachResult(function(searchResult) {
+    comm_reg_results.forEachResult(function (searchResult) {
         count_commReg++;
 
         /**
@@ -1656,10 +1688,10 @@ function saveRecord() {
         }
 
         console.log('Before admin')
-            /*-----------------Admin Fees: YES-----------------*/
-            /**
-             * To capture the Admin Fee information
-             */
+        /*-----------------Admin Fees: YES-----------------*/
+        /**
+         * To capture the Admin Fee information
+         */
         if (admin_fees_log == true || admin_fees_log == 'true') {
             for (var i = 0; i < admin_fees_rate_elem.length; ++i) {
                 var jobid = (admin_fees_rate_elem[i].getAttribute("data-jobid"));
