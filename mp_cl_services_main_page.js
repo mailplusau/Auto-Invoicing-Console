@@ -325,9 +325,17 @@ $(document).on('blur', '.invoiceable_qty', function (e) {
     var netsuite_qty = $(this).closest('tr').find('.package_netsuite_qty').val();
     var total_inv_qty = parseFloat(app_qty) + parseFloat(netsuite_qty);
 
+    console.log('invoiceable_qty : ' + invoiceable_qty );
+    console.log('rate : ' + rate );
+    console.log('serviceId : ' + serviceId );
+    console.log('app_qty : ' + app_qty );
+    console.log('netsuite_qty : ' + netsuite_qty );
+    console.log('total_inv_qty : ' + total_inv_qty );
+
     if (invoiceable_qty >= 0) {
         if (invoiceable_qty == 0) {
             if (app_qty > 0) {
+
                 var completedJobsThisMonthSearch = nlapiLoadSearch('customrecord_job', 'customsearch_aic_completed_jobs_this_mon');
 
                 var newFiltersCompletedJobs = new Array();
@@ -377,14 +385,45 @@ $(document).on('blur', '.invoiceable_qty', function (e) {
             }
         } else {
             if (parseInt(app_qty) > invoiceable_qty) {
-                alert('Cannot reduce quantity below ' + app_qty + '. \nTo reduce the quantity, please click on the App Jobs and set \"DO YOU WANT TO INVOICE JOB GROUP??\" to \"No\"');
-                $(this).val(app_qty);
-                $(this).closest('tr').find('.package_netsuite_qty').val(0);
-                var total_rate = updateServiceAmount(parseFloat(rate), parseFloat(app_qty));
+                // alert('Cannot reduce quantity below ' + app_qty + '. \nTo reduce the quantity, please click on the App Jobs and set \"DO YOU WANT TO INVOICE JOB GROUP??\" to \"No\"');
+                // $(this).val(app_qty);
+                // $(this).closest('tr').find('.package_netsuite_qty').val(0);
+                // var total_rate = updateServiceAmount(parseFloat(rate), parseFloat(app_qty));
+                // $(this).closest('tr').find('.service_total_value').val(roundTwoDec(total_rate));
+                // $(this).closest('tr').find('.service_total_value').focus();
+                // $(this).closest('tr').find('.service_total').val((total_rate));
+                // return false;
+                var completedJobsThisMonthSearch = nlapiLoadSearch('customrecord_job', 'customsearch_aic_completed_jobs_this_mon');
+
+                var newFiltersCompletedJobs = new Array();
+                newFiltersCompletedJobs[newFiltersCompletedJobs.length] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', global_customer);
+                newFiltersCompletedJobs[newFiltersCompletedJobs.length] = new nlobjSearchFilter('custrecord_job_service', null, 'is', serviceId);
+                newFiltersCompletedJobs[newFiltersCompletedJobs.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', (nlapiGetFieldValue('start_date')));
+                newFiltersCompletedJobs[newFiltersCompletedJobs.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorbefore', (nlapiGetFieldValue('end_date')));
+
+                completedJobsThisMonthSearch.addFilters(newFiltersCompletedJobs);
+
+                var resultSetCompletedJobs = completedJobsThisMonthSearch.runSearch();
+
+                resultSetCompletedJobs.forEachResult(function (searchResult) {
+
+                    var appJobId = searchResult.getValue('internalid');
+
+                    var recAppJobs = nlapiLoadRecord('customrecord_job', appJobId);
+                    recAppJobs.setFieldValue('custrecord_job_invoiceable', 2);
+
+                    nlapiSubmitRecord(recAppJobs);
+
+                    return true;
+                });
+
+
+                var new_netsuite_qty = parseFloat(invoiceable_qty);
+                $(this).closest('tr').find('.package_netsuite_qty').val(new_netsuite_qty);
+                var total_rate = updateServiceAmount(parseFloat(rate), parseFloat(invoiceable_qty));
                 $(this).closest('tr').find('.service_total_value').val(roundTwoDec(total_rate));
                 $(this).closest('tr').find('.service_total_value').focus();
                 $(this).closest('tr').find('.service_total').val((total_rate));
-                return false;
             }
             if (parseInt(total_inv_qty) != invoiceable_qty) {
                 var new_netsuite_qty = parseFloat(invoiceable_qty) - parseFloat(total_inv_qty);

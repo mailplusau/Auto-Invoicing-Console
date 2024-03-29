@@ -200,10 +200,10 @@ function invoiceCreation() {
 							recInvoice.setFieldValue('department', nlapiLoadRecord('partner', franchisee).getFieldValue('department'));
 							recInvoice.setFieldValue('location', nlapiLoadRecord('partner', franchisee).getFieldValue('location'));
 							// recInvoice.setFieldValue('trandate', invoice_date());
-							recInvoice.setFieldValue('trandate', '30/06/2022');
+							recInvoice.setFieldValue('trandate', '31/03/2024');
 							recInvoice.setFieldValue('custbody_dont_update_trandate', "T");
-							recInvoice.setFieldValue('custbody_inv_date_range_from', '1/6/2022');
-							recInvoice.setFieldValue('custbody_inv_date_range_to', '30/6/2022');
+							recInvoice.setFieldValue('custbody_inv_date_range_from', '1/03/2024');
+							recInvoice.setFieldValue('custbody_inv_date_range_to', '31/03/2024');
 
 							recInvoice.setFieldValue('partner', franchisee);
 

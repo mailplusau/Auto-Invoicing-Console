@@ -6,8 +6,8 @@
  *
  * Remarks: Allocate Jobs to Pre defined packages setup by the Zees        
  * 
- * @Last Modified by:   Ankith
- * @Last Modified time: 2020-07-17 14:43:27
+ * @Last Modified by:   mailplusar
+ * @Last Modified time: 2018-02-16 09:22:58
  *
  */
 
@@ -39,7 +39,7 @@ function main(type) {
 	var service_ids_array = [];
 
 	/**
-	 * AIC - Package - Customer (DO NOT DELETE)	
+	 * Job - Package Allocator (Customer)
 	 */
 	var searched_jobs = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_allocator_cus');
 
@@ -56,7 +56,7 @@ function main(type) {
 	/**
 	 * [description] - Search result run based on the customer
 	 */
-	resultSet.forEachResult(function(searchResult) {
+	resultSet.forEachResult(function (searchResult) {
 
 		var usageStartCustomer = ctx.getRemainingUsage();
 
@@ -109,7 +109,7 @@ function main(type) {
 				var count_package = 0;
 
 				// [description] - Get all the packages based on the customer
-				packageResult.forEachResult(function(searchPackageResult) {
+				packageResult.forEachResult(function (searchPackageResult) {
 
 					var usageStartPackage = ctx.getRemainingUsage();
 
@@ -170,360 +170,361 @@ function main(type) {
 						/**
 						 * SWITCH - Based on the Discount Period 
 						 */
-						if (discount_period == 1) {
+						// if (discount_period == 1) {
 
-							// Discount Period - Per Visit
-							nlapiLogExecution('DEBUG', 'Begining of the Package Switch - PER VISIT: ', 'Package:' + package_text + '| Customer: ' + customer_text + ' | Usage: ' + ctx.getRemainingUsage());
+						// 	// Discount Period - Per Visit
+						// 	nlapiLogExecution('DEBUG', 'Begining of the Package Switch - PER VISIT: ', 'Package:' + package_text + '| Customer: ' + customer_text + ' | Usage: ' + ctx.getRemainingUsage());
 
-							/**
-							 * Job - Package Allocator (Date-Time)
-							 */
-							var searched_jobs2 = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_allocator_dt');
+						// 	/**
+						// 	 * Job - Package Allocator (Date-Time)
+						// 	 */
+						// 	var searched_jobs2 = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_allocator_d');
 
 
-							//Filter for Job - Package Allocator (Date-Time) are customer,serviceids, zee
-							var newFilters = new Array();
-							newFilters[0] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
-							newFilters[1] = new nlobjSearchFilter('custrecord_job_service', null, 'anyof', service_ids);
-							newFilters[2] = new nlobjSearchFilter('custrecord_job_franchisee', null, 'is', customer_franchisee);
-							if (!isNullorEmpty(date_effective)) {
-								newFilters[3] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', nlapiStringToDate(date_effective));
-							}
+						// 	//Filter for Job - Package Allocator (Date-Time) are customer,serviceids, zee
+						// 	var newFilters = new Array();
+						// 	newFilters[0] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
+						// 	newFilters[1] = new nlobjSearchFilter('custrecord_job_service', null, 'anyof', service_ids);
+						// 	newFilters[2] = new nlobjSearchFilter('custrecord_job_franchisee', null, 'is', customer_franchisee);
+						// 	if (!isNullorEmpty(date_effective)) {
+						// 		newFilters[3] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', nlapiStringToDate(date_effective));
+						// 	}
 
-							searched_jobs2.addFilters(newFilters);
+						// 	searched_jobs2.addFilters(newFilters);
 
-							var resultSet2 = searched_jobs2.runSearch();
+						// 	var resultSet2 = searched_jobs2.runSearch();
 
-							var usageStartDateTime = ctx.getRemainingUsage();
+						// 	var usageStartDateTime = ctx.getRemainingUsage();
 
-							var count_date_time = 0;
+						// 	var count_date_time = 0;
 
-							//To go through all the result for Job - Package Allocator (Date-Time)
-							resultSet2.forEachResult(function(searchResult2) {
+						// 	//To go through all the result for Job - Package Allocator (Date-Time)
+						// 	resultSet2.forEachResult(function (searchResult2) {
 
-								var usageStartPerVisit = ctx.getRemainingUsage();
+						// 		var usageStartPerVisit = ctx.getRemainingUsage();
 
-								// var resultPerVisit = rescheduleSC(usageStartPerVisit);
+						// 		// var resultPerVisit = rescheduleSC(usageStartPerVisit);
 
-								if (usageStartPerVisit <= usageThreshold) {
+						// 		if (usageStartPerVisit <= usageThreshold) {
 
-									nlapiLogExecution('DEBUG', 'SWITCHing at Package: ' + package_text + ' - PER VISIT for Customer: ' + customer_text + ' -->', ctx.getRemainingUsage());
+						// 			nlapiLogExecution('DEBUG', 'SWITCHing at Package: ' + package_text + ' - PER VISIT for Customer: ' + customer_text + ' -->', ctx.getRemainingUsage());
 
-									var params = {
-										custscript_prev_deploy_id: ctx.getDeploymentId()
-									}
+						// 			var params = {
+						// 				custscript_prev_deploy_id: ctx.getDeploymentId()
+						// 			}
 
-									reschedulePerVisit = rescheduleScript(prevInvDeploy, adhocInvDeploy, params);
-									if (reschedulePerVisit == false) {
-										return false;
-									}
-								} else {
-									nlapiLogExecution('DEBUG', 'Begining of the Date-Time search loop ', ctx.getRemainingUsage());
+						// 			reschedulePerVisit = rescheduleScript(prevInvDeploy, adhocInvDeploy, params);
+						// 			if (reschedulePerVisit == false) {
+						// 				return false;
+						// 			}
+						// 		} else {
+						// 			nlapiLogExecution('DEBUG', 'Begining of the Date-Time search loop ', ctx.getRemainingUsage());
 
-									var date_finalised = searchResult2.getValue('custrecord_job_date_finalised', null, 'GROUP');
-									var time_finalised = searchResult2.getValue('custrecord_job_time_finalised', null, 'GROUP');
-									var count = searchResult2.getValue('internalid', null, 'COUNT');
+						// 			var date_finalised = searchResult2.getValue('custrecord_job_date_finalised', null, 'GROUP');
+						// 			// var time_finalised = searchResult2.getValue('custrecord_job_time_finalised', null, 'GROUP');
+						// 			var count = searchResult2.getValue('internalid', null, 'COUNT');
 
 
-									/**
-									 * Job - Package Allocator
-									 */
-									var searched_jobs3 = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_allocator');
+						// 			/**
+						// 			 * Job - Package Allocator
+						// 			 */
+						// 			var searched_jobs3 = nlapiLoadSearch('customrecord_job', 'customsearch_job_invoicing_allocator');
 
-									// Filters for Job - Package Allocator are customerid, serviceids, zee,date finalised, time finalised
-									var newFilters = new Array();
-									newFilters[0] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
-									newFilters[1] = new nlobjSearchFilter('custrecord_job_date_finalised', null, 'on', nlapiStringToDate(date_finalised));
-									newFilters[2] = new nlobjSearchFilter('custrecord_job_time_finalised', null, 'equalto', time_finalised);
-									newFilters[3] = new nlobjSearchFilter('custrecord_job_service', null, 'is', service_ids);
-									newFilters[4] = new nlobjSearchFilter('custrecord_job_franchisee', null, 'is', customer_franchisee);
-									if (!isNullorEmpty(date_effective)) {
-										newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', nlapiStringToDate(date_effective));
-									}
-									// if (invoice_incomplete == 2) {
-									// 	newFilters[5] = new nlobjSearchFilter('custrecord_job_status', null, 'is', 3);
-									// }
+						// 			// Filters for Job - Package Allocator are customerid, serviceids, zee,date finalised, time finalised
+						// 			var newFilters = new Array();
+						// 			newFilters[0] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
+						// 			newFilters[1] = new nlobjSearchFilter('custrecord_job_date_finalised', null, 'on', nlapiStringToDate(date_finalised));
+						// 			// newFilters[2] = new nlobjSearchFilter('custrecord_job_time_finalised', null, 'equalto', time_finalised);
+						// 			newFilters[3] = new nlobjSearchFilter('custrecord_job_service', null, 'is', service_ids);
+						// 			newFilters[4] = new nlobjSearchFilter('custrecord_job_franchisee', null, 'is', customer_franchisee);
+						// 			if (!isNullorEmpty(date_effective)) {
+						// 				newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', nlapiStringToDate(date_effective));
+						// 			}
+						// 			// if (invoice_incomplete == 2) {
+						// 			// 	newFilters[5] = new nlobjSearchFilter('custrecord_job_status', null, 'is', 3);
+						// 			// }
 
-									searched_jobs3.addFilters(newFilters);
+						// 			searched_jobs3.addFilters(newFilters);
 
-									var resultSet3 = searched_jobs3.runSearch();
+						// 			var resultSet3 = searched_jobs3.runSearch();
 
-									var job_group_status_array = [];
-									var job_group_invoiceable_array = [];
-									var result_service_ids = [];
+						// 			var job_group_status_array = [];
+						// 			var job_group_invoiceable_array = [];
+						// 			var result_service_ids = [];
 
-									nlapiLogExecution('DEBUG', 'Start of Creating Job Group ID/Status Array ', ctx.getRemainingUsage());
+						// 			nlapiLogExecution('DEBUG', 'Start of Creating Job Group ID/Status Array ', ctx.getRemainingUsage());
 
-									/**
-									 * To go throught all the results from the Job - Package Allocator and get the Job Group Ids for the related services
-									 */
-									resultSet3.forEachResult(function(searchResult3) {
+						// 			/**
+						// 			 * To go throught all the results from the Job - Package Allocator and get the Job Group Ids for the related services
+						// 			 */
+						// 			resultSet3.forEachResult(function (searchResult3) {
 
-										var job_id = searchResult3.getValue('internalid');
-										var job_group_id = searchResult3.getValue('custrecord_job_group');
-										var service_id = searchResult3.getValue('custrecord_job_service');
-										var service_text = searchResult3.getText('custrecord_job_service');
-										var job_invoiceable = searchResult3.getValue('custrecord_job_invoiceable');
-										var job_group_status = searchResult3.getValue("custrecord_jobgroup_status", "CUSTRECORD_JOB_GROUP", null);
+						// 				var job_id = searchResult3.getValue('internalid');
+						// 				var job_group_id = searchResult3.getValue('custrecord_job_group');
+						// 				var service_id = searchResult3.getValue('custrecord_job_service');
+						// 				var service_text = searchResult3.getText('custrecord_job_service');
+						// 				var job_invoiceable = searchResult3.getValue('custrecord_job_invoiceable');
+						// 				var job_group_status = searchResult3.getValue("custrecord_jobgroup_status", "CUSTRECORD_JOB_GROUP", null);
 
-										nlapiLogExecution('AUDIT', 'Job Group ID : ' + job_group_id + ' | Status Array: ' + job_group_status, ctx.getRemainingUsage());
+						// 				nlapiLogExecution('AUDIT', 'Job Group ID : ' + job_group_id + ' | Status Array: ' + job_group_status, ctx.getRemainingUsage());
 
-										var pos = service_ids.indexOf(service_id);
+						// 				var pos = service_ids.indexOf(service_id);
 
-										var len = job_group_ids_array[pos].length;
+						// 				var len = job_group_ids_array[pos].length;
 
-										result_service_ids[result_service_ids.length] = service_id;
-										job_ids_array[pos][len] = job_id;
-										job_group_ids_array[pos][len] = job_group_id;
-										job_group_status_array[job_group_id] = job_group_status;
-										job_group_invoiceable_array[job_group_id] = job_invoiceable;
-										return true;
-									});
+						// 				result_service_ids[result_service_ids.length] = service_id;
+						// 				job_ids_array[pos][len] = job_id;
+						// 				job_group_ids_array[pos][len] = job_group_id;
+						// 				job_group_status_array[job_group_id] = job_group_status;
+						// 				job_group_invoiceable_array[job_group_id] = job_invoiceable;
+						// 				return true;
+						// 			});
 
-									result_service_ids = result_service_ids.filter(function(elem, index, self) {
-										return index == self.indexOf(elem);
-									});
+						// 			result_service_ids = result_service_ids.filter(function (elem, index, self) {
+						// 				return index == self.indexOf(elem);
+						// 			});
 
-									nlapiLogExecution('DEBUG', 'End of Creating Job Group ID/Status Array ', ctx.getRemainingUsage());
+						// 			nlapiLogExecution('DEBUG', 'End of Creating Job Group ID/Status Array ', ctx.getRemainingUsage());
 
 
-									if (service_ids.length == result_service_ids.length) {
+						// 			if (service_ids.length == result_service_ids.length) {
 
-										nlapiLogExecution('DEBUG', 'INSIDE');
-										var unique = [];
+						// 				nlapiLogExecution('DEBUG', 'INSIDE');
+						// 				var unique = [];
 
-										for (var i = 0; i < job_group_ids_array.length; i++) {
-											unique[i] = [];
+						// 				for (var i = 0; i < job_group_ids_array.length; i++) {
+						// 					unique[i] = [];
 
-											unique[i] = job_group_ids_array[i].filter(function(elem, index, self) {
-												return index == self.indexOf(elem);
-											});
-										}
+						// 					unique[i] = job_group_ids_array[i].filter(function (elem, index, self) {
+						// 						return index == self.indexOf(elem);
+						// 					});
+						// 				}
 
 
-										var shortest = unique.reduce(function(p, c) {
-											return p.length > c.length ? c : p;
-										}, {
-											length: Infinity
-										});
+						// 				var shortest = unique.reduce(function (p, c) {
+						// 					return p.length > c.length ? c : p;
+						// 				}, {
+						// 					length: Infinity
+						// 				});
 
-										// var unique = job_groups_list.filter(function(elem, index, self) {
-										// 	return index == self.indexOf(elem);
-										// });
-										// 
-										var final_package_status = null;
-										var final_invoiceable = null;
-										invoiceable_check = false;
+						// 				// var unique = job_groups_list.filter(function(elem, index, self) {
+						// 				// 	return index == self.indexOf(elem);
+						// 				// });
+						// 				// 
+						// 				var final_package_status = null;
+						// 				var final_invoiceable = null;
+						// 				invoiceable_check = false;
 
-										if (shortest.length > 0) {
-											for (var y = 0; y < shortest.length; y++) {
-												for (var i = 0; i < unique.length; i++) {
-													job_groups_list[job_groups_list.length] = unique[i][y];
-													var status = job_group_status_array[unique[i][y]];
+						// 				if (shortest.length > 0) {
+						// 					for (var y = 0; y < shortest.length; y++) {
+						// 						for (var i = 0; i < unique.length; i++) {
+						// 							job_groups_list[job_groups_list.length] = unique[i][y];
+						// 							var status = job_group_status_array[unique[i][y]];
 
-													var invoiceable = job_group_invoiceable_array[unique[i][y]];
+						// 							var invoiceable = job_group_invoiceable_array[unique[i][y]];
 
-													final_package_status = getPackageStatus(final_package_status, status);
-													final_invoiceable = getPackageInvoiceable(final_invoiceable, status, invoiceable);
-												}
+						// 							final_package_status = getPackageStatus(final_package_status, status);
+						// 							final_invoiceable = getPackageInvoiceable(final_invoiceable, status, invoiceable);
+						// 						}
 
-												job_groups_list.sort(function(a, b) {
-													return a - b
-												});
-												if (!isNullorEmpty(job_groups_list)) {
+						// 						job_groups_list.sort(function (a, b) {
+						// 							return a - b
+						// 						});
+						// 						if (!isNullorEmpty(job_groups_list)) {
 
-													nlapiLogExecution('DEBUG', 'Start of Allocator Jobs Loop', ctx.getRemainingUsage());
+						// 							nlapiLogExecution('DEBUG', 'Start of Allocator Jobs Loop', ctx.getRemainingUsage());
 
-													// Search: Job - Package Allocator - Unfiltered - DO NOT DELETE
-													var searched_jobs4 = nlapiLoadSearch('customrecord_job', 'customsearch_job_pkg_allocatr_unfilterd');
+						// 							// Search: Job - Package Allocator - Unfiltered - DO NOT DELETE
+						// 							var searched_jobs4 = nlapiLoadSearch('customrecord_job', 'customsearch_job_pkg_allocatr_unfilterd');
 
-													nlapiLogExecution('DEBUG', 'Period Type 1 | Shortest Length > 0 ', 'job_groups_list: ' + job_groups_list);
+						// 							nlapiLogExecution('DEBUG', 'Period Type 1 | Shortest Length > 0 ', 'job_groups_list: ' + job_groups_list);
 
 
-													var newFilters = new Array();
-													newFilters[0] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
-													newFilters[1] = new nlobjSearchFilter('custrecord_job_group', null, 'anyof', job_groups_list);
-													newFilters[2] = new nlobjSearchFilter('custrecord_job_franchisee', null, 'is', customer_franchisee);
-													if (include_extras == 2) {
-														newFilters[3] = new nlobjSearchFilter('custrecord_job_service_category', null, 'is', 1);
-													}
-													if (!isNullorEmpty(date_effective)) {
-														newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', nlapiStringToDate(date_effective));
-													}
-													// if (invoice_incomplete == 2) {
-													// 	newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_status', null, 'is', 3);
-													// }
+						// 							var newFilters = new Array();
+						// 							newFilters[0] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
+						// 							newFilters[1] = new nlobjSearchFilter('custrecord_job_group', null, 'anyof', job_groups_list);
+						// 							newFilters[2] = new nlobjSearchFilter('custrecord_job_franchisee', null, 'is', customer_franchisee);
+						// 							if (include_extras == 2) {
+						// 								newFilters[3] = new nlobjSearchFilter('custrecord_job_service_category', null, 'is', 1);
+						// 							}
+						// 							if (!isNullorEmpty(date_effective)) {
+						// 								newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', nlapiStringToDate(date_effective));
+						// 							}
+						// 							// if (invoice_incomplete == 2) {
+						// 							// 	newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_status', null, 'is', 3);
+						// 							// }
 
-													searched_jobs4.addFilters(newFilters);
+						// 							searched_jobs4.addFilters(newFilters);
 
-													var resultSet4 = searched_jobs4.runSearch();
+						// 							var resultSet4 = searched_jobs4.runSearch();
 
-													var usageStartAllocator = ctx.getRemainingUsage();
+						// 							var usageStartAllocator = ctx.getRemainingUsage();
 
-													if (usageStartAllocator <= usageThreshold) {
+						// 							if (usageStartAllocator <= usageThreshold) {
 
-														nlapiLogExecution('DEBUG', 'SWITCHing at -->', 'PACKAGE PER DAY - Allocator:' + package_text + ' | Customer: ' + customer_text + ' | Job Group List: ' + job_groups_list + ' | ' + ctx.getRemainingUsage());
+						// 								nlapiLogExecution('DEBUG', 'SWITCHing at -->', 'PACKAGE PER DAY - Allocator:' + package_text + ' | Customer: ' + customer_text + ' | Job Group List: ' + job_groups_list + ' | ' + ctx.getRemainingUsage());
 
-														var params = {
-															custscript_prev_deploy_id: ctx.getDeploymentId()
-														}
+						// 								var params = {
+						// 									custscript_prev_deploy_id: ctx.getDeploymentId()
+						// 								}
 
-														rescheduleJobPackageAllocator = rescheduleScript(prevInvDeploy, adhocInvDeploy, params);
-														nlapiLogExecution('DEBUG', 'rescheduleJobPackageAllocator', rescheduleJobPackageAllocator);
-														if (rescheduleJobPackageAllocator == false) {
-															return false;
-														}
-													} else {
-														resultSet4.forEachResult(function(searchResult4) {
+						// 								rescheduleJobPackageAllocator = rescheduleScript(prevInvDeploy, adhocInvDeploy, params);
+						// 								nlapiLogExecution('DEBUG', 'rescheduleJobPackageAllocator', rescheduleJobPackageAllocator);
+						// 								if (rescheduleJobPackageAllocator == false) {
+						// 									return false;
+						// 								}
+						// 							} else {
+						// 								resultSet4.forEachResult(function (searchResult4) {
 
 
-															var startUsageAllocator = ctx.getRemainingUsage();
+						// 									var startUsageAllocator = ctx.getRemainingUsage();
 
-															var job_record = nlapiLoadRecord('customrecord_job', searchResult4.getValue('internalid'));
+						// 									var job_record = nlapiLoadRecord('customrecord_job', searchResult4.getValue('internalid'));
 
 
-															job_record.setFieldValue('custrecord_job_service_package', package_id);
-															job_record.setFieldValue('custrecord_job_invoice_single_line_item', invoice_single_item);
-															job_record.setFieldValue('custrecord_job_discount_type', discount_type);
-															job_record.setFieldValues('custrecord_package_job_groups', job_groups_list);
-															job_record.setFieldValue('custrecord_package_status', final_package_status);
-															job_record.setFieldValue('custrecord_job_invoiceable', final_invoiceable);
-															job_record.setFieldValue('custrecord_job_date_allocated', getDate());
-															nlapiSubmitRecord(job_record);
+						// 									job_record.setFieldValue('custrecord_job_service_package', package_id);
+						// 									job_record.setFieldValue('custrecord_job_invoice_single_line_item', invoice_single_item);
+						// 									job_record.setFieldValue('custrecord_job_discount_type', discount_type);
+						// 									job_record.setFieldValues('custrecord_package_job_groups', job_groups_list);
+						// 									job_record.setFieldValue('custrecord_package_status', final_package_status);
+						// 									job_record.setFieldValue('custrecord_job_invoiceable', final_invoiceable);
+						// 									job_record.setFieldValue('custrecord_job_date_allocated', getDate());
+						// 									nlapiSubmitRecord(job_record);
 
-															nlapiLogExecution('AUDIT', 'PACKAGE PER VISIT - Allocator | Job ID: ' + searchResult4.getValue('internalid'), (startUsageAllocator - ctx.getRemainingUsage()));
+						// 									nlapiLogExecution('AUDIT', 'PACKAGE PER VISIT - Allocator | Job ID: ' + searchResult4.getValue('internalid'), (startUsageAllocator - ctx.getRemainingUsage()));
 
 
-															return true;
-														});
+						// 									return true;
+						// 								});
 
-														nlapiLogExecution('DEBUG', 'End of Allocator Jobs Loop', ctx.getRemainingUsage());
+						// 								nlapiLogExecution('DEBUG', 'End of Allocator Jobs Loop', ctx.getRemainingUsage());
 
-														job_groups_list = [];
-													}
-												} else {
-													return true;
-												}
+						// 								job_groups_list = [];
+						// 							}
+						// 						} else {
+						// 							return true;
+						// 						}
 
-											}
-										} else {
-											for (var i = 0; i < unique.length; i++) {
-												job_groups_list[job_groups_list.length] = unique[i][0];
-												var status = job_group_status_array[unique[i][0]];
+						// 					}
+						// 				} else {
+						// 					for (var i = 0; i < unique.length; i++) {
+						// 						job_groups_list[job_groups_list.length] = unique[i][0];
+						// 						var status = job_group_status_array[unique[i][0]];
 
-												var invoiceable = job_group_invoiceable_array[unique[i][0]];
+						// 						var invoiceable = job_group_invoiceable_array[unique[i][0]];
 
-												final_package_status = getPackageStatus(final_package_status, status);
-												final_invoiceable = getPackageInvoiceable(final_invoiceable, status, invoiceable);
-											}
+						// 						final_package_status = getPackageStatus(final_package_status, status);
+						// 						final_invoiceable = getPackageInvoiceable(final_invoiceable, status, invoiceable);
+						// 					}
 
-											job_groups_list.sort(function(a, b) {
-												return a - b
-											});
+						// 					job_groups_list.sort(function (a, b) {
+						// 						return a - b
+						// 					});
 
-											job_groups_list = cleanArray(job_groups_list)
+						// 					job_groups_list = cleanArray(job_groups_list)
 
-											if (!isNullorEmpty(job_groups_list)) {
+						// 					if (!isNullorEmpty(job_groups_list)) {
 
 
-												nlapiLogExecution('DEBUG', 'Start of Allocator Jobs Loop', ctx.getRemainingUsage());
+						// 						nlapiLogExecution('DEBUG', 'Start of Allocator Jobs Loop', ctx.getRemainingUsage());
 
-												//Search: Job - Package Allocator - Unfiltered - DO NOT DELETE
-												var searched_jobs4 = nlapiLoadSearch('customrecord_job', 'customsearch_job_pkg_allocatr_unfilterd');
+						// 						//Search: Job - Package Allocator - Unfiltered - DO NOT DELETE
+						// 						var searched_jobs4 = nlapiLoadSearch('customrecord_job', 'customsearch_job_pkg_allocatr_unfilterd');
 
-												nlapiLogExecution('DEBUG', 'Period Type 1 | Shortest Length = 0 ', 'job_groups_list: ' + job_groups_list);
+						// 						nlapiLogExecution('DEBUG', 'Period Type 1 | Shortest Length = 0 ', 'job_groups_list: ' + job_groups_list);
 
 
-												var newFilters = new Array();
-												newFilters[0] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
-												newFilters[1] = new nlobjSearchFilter('custrecord_job_group', null, 'anyof', job_groups_list);
-												newFilters[2] = new nlobjSearchFilter('custrecord_job_franchisee', null, 'is', customer_franchisee);
-												if (include_extras == 2) {
-													newFilters[3] = new nlobjSearchFilter('custrecord_job_service_category', null, 'is', 1);
-												}
-												if (!isNullorEmpty(date_effective)) {
-													newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', nlapiStringToDate(date_effective));
-												}
-												// if (invoice_incomplete == 2) {
-												// 	newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_status', null, 'is', 3);
-												// }
+						// 						var newFilters = new Array();
+						// 						newFilters[0] = new nlobjSearchFilter('custrecord_job_customer', null, 'is', customer_id);
+						// 						newFilters[1] = new nlobjSearchFilter('custrecord_job_group', null, 'anyof', job_groups_list);
+						// 						newFilters[2] = new nlobjSearchFilter('custrecord_job_franchisee', null, 'is', customer_franchisee);
+						// 						if (include_extras == 2) {
+						// 							newFilters[3] = new nlobjSearchFilter('custrecord_job_service_category', null, 'is', 1);
+						// 						}
+						// 						if (!isNullorEmpty(date_effective)) {
+						// 							newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_date_scheduled', null, 'onorafter', nlapiStringToDate(date_effective));
+						// 						}
+						// 						// if (invoice_incomplete == 2) {
+						// 						// 	newFilters[newFilters.length] = new nlobjSearchFilter('custrecord_job_status', null, 'is', 3);
+						// 						// }
 
-												searched_jobs4.addFilters(newFilters);
+						// 						searched_jobs4.addFilters(newFilters);
 
-												var resultSet4 = searched_jobs4.runSearch();
+						// 						var resultSet4 = searched_jobs4.runSearch();
 
-												var usageStartAllocator = ctx.getRemainingUsage();
+						// 						var usageStartAllocator = ctx.getRemainingUsage();
 
-												if (usageStartAllocator <= usageThreshold) {
+						// 						if (usageStartAllocator <= usageThreshold) {
 
-													nlapiLogExecution('DEBUG', 'SWITCHing at -->', 'PACKAGE PER DAY - Allocator:' + package_text + ' | Customer: ' + customer_text + ' | Job Group List: ' + job_groups_list + ' | ' + ctx.getRemainingUsage());
+						// 							nlapiLogExecution('DEBUG', 'SWITCHing at -->', 'PACKAGE PER DAY - Allocator:' + package_text + ' | Customer: ' + customer_text + ' | Job Group List: ' + job_groups_list + ' | ' + ctx.getRemainingUsage());
 
-													var params = {
-														custscript_prev_deploy_id: ctx.getDeploymentId()
-													}
+						// 							var params = {
+						// 								custscript_prev_deploy_id: ctx.getDeploymentId()
+						// 							}
 
-													rescheduleJobPackageAllocator = rescheduleScript(prevInvDeploy, adhocInvDeploy, params);
-													nlapiLogExecution('DEBUG', 'rescheduleJobPackageAllocator', rescheduleJobPackageAllocator);
-													if (rescheduleJobPackageAllocator == false) {
-														return false;
-													}
-												} else {
-													resultSet4.forEachResult(function(searchResult4) {
+						// 							rescheduleJobPackageAllocator = rescheduleScript(prevInvDeploy, adhocInvDeploy, params);
+						// 							nlapiLogExecution('DEBUG', 'rescheduleJobPackageAllocator', rescheduleJobPackageAllocator);
+						// 							if (rescheduleJobPackageAllocator == false) {
+						// 								return false;
+						// 							}
+						// 						} else {
+						// 							resultSet4.forEachResult(function (searchResult4) {
 
 
-														var startUsageAllocator = ctx.getRemainingUsage();
+						// 								var startUsageAllocator = ctx.getRemainingUsage();
 
-														var job_record = nlapiLoadRecord('customrecord_job', searchResult4.getValue('internalid'));
+						// 								var job_record = nlapiLoadRecord('customrecord_job', searchResult4.getValue('internalid'));
 
 
-														job_record.setFieldValue('custrecord_job_service_package', package_id);
-														job_record.setFieldValue('custrecord_job_invoice_single_line_item', invoice_single_item);
-														job_record.setFieldValue('custrecord_job_discount_type', discount_type);
-														job_record.setFieldValues('custrecord_package_job_groups', job_groups_list);
-														job_record.setFieldValue('custrecord_package_status', final_package_status);
-														job_record.setFieldValue('custrecord_job_invoiceable', final_invoiceable);
-														job_record.setFieldValue('custrecord_job_date_allocated', getDate());
-														nlapiSubmitRecord(job_record);
+						// 								job_record.setFieldValue('custrecord_job_service_package', package_id);
+						// 								job_record.setFieldValue('custrecord_job_invoice_single_line_item', invoice_single_item);
+						// 								job_record.setFieldValue('custrecord_job_discount_type', discount_type);
+						// 								job_record.setFieldValues('custrecord_package_job_groups', job_groups_list);
+						// 								job_record.setFieldValue('custrecord_package_status', final_package_status);
+						// 								job_record.setFieldValue('custrecord_job_invoiceable', final_invoiceable);
+						// 								job_record.setFieldValue('custrecord_job_date_allocated', getDate());
+						// 								nlapiSubmitRecord(job_record);
 
-														nlapiLogExecution('AUDIT', 'PACKAGE PER VISIT - Allocator | Job ID: ' + searchResult4.getValue('internalid'), (startUsageAllocator - ctx.getRemainingUsage()));
+						// 								nlapiLogExecution('AUDIT', 'PACKAGE PER VISIT - Allocator | Job ID: ' + searchResult4.getValue('internalid'), (startUsageAllocator - ctx.getRemainingUsage()));
 
 
-														return true;
-													});
+						// 								return true;
+						// 							});
 
-													nlapiLogExecution('DEBUG', 'End of Allocator Jobs Loop', ctx.getRemainingUsage());
+						// 							nlapiLogExecution('DEBUG', 'End of Allocator Jobs Loop', ctx.getRemainingUsage());
 
-													job_groups_list = [];
-												}
-											} else {
-												return true;
-											}
+						// 							job_groups_list = [];
+						// 						}
+						// 					} else {
+						// 						return true;
+						// 					}
 
-										}
+						// 				}
 
-										if (rescheduleJobPackageAllocator == false) {
-											return false;
-										} else {
-											for (var i = 0; i < job_group_ids_array.length; i++) {
-												job_group_ids_array[i] = [];
-											}
+						// 				if (rescheduleJobPackageAllocator == false) {
+						// 					return false;
+						// 				} else {
+						// 					for (var i = 0; i < job_group_ids_array.length; i++) {
+						// 						job_group_ids_array[i] = [];
+						// 					}
 
-											count_date_time++;
+						// 					count_date_time++;
 
-											nlapiLogExecution('DEBUG', 'Usage end of (' + count_date_time + ') Date Time loop ', 'For Services: ' + service_names + ' | For Pakcgae: ' + package_text + ' | Customer: ' + customer_text + ' | Usage: ' + (usageStartPerVisit - ctx.getRemainingUsage()));
+						// 					nlapiLogExecution('DEBUG', 'Usage end of (' + count_date_time + ') Date Time loop ', 'For Services: ' + service_names + ' | For Pakcgae: ' + package_text + ' | Customer: ' + customer_text + ' | Usage: ' + (usageStartPerVisit - ctx.getRemainingUsage()));
 
-											return true;
-										}
-									} else {
-										return true;
-									}
+						// 					return true;
+						// 				}
+						// 			} else {
+						// 				return true;
+						// 			}
 
-								}
-							});
+						// 		}
+						// 	});
 
-							nlapiLogExecution('DEBUG', 'End of the Date Time search loop ', ctx.getRemainingUsage());
+						// 	nlapiLogExecution('DEBUG', 'End of the Date Time search loop ', ctx.getRemainingUsage());
 
-						} else if (discount_period == 2) {
+						// } else
+						if (discount_period == 2 || discount_period == 1) {
 
 							//Discount Period - per Day
 							nlapiLogExecution('DEBUG', 'Begining of the Package Switch - PER DAY: ', 'Package:' + package_text + '| Customer: ' + customer_text + ' | Usage: ' + ctx.getRemainingUsage());
@@ -547,7 +548,7 @@ function main(type) {
 							var resultSet2 = searched_jobs2.runSearch();
 							var count_date = 0;
 
-							resultSet2.forEachResult(function(searchResult2) {
+							resultSet2.forEachResult(function (searchResult2) {
 
 								// rescheduleSC();
 								// 
@@ -593,7 +594,7 @@ function main(type) {
 
 									nlapiLogExecution('DEBUG', 'Creating Job Group ID/Status Array', ctx.getRemainingUsage());
 
-									resultSet3.forEachResult(function(searchResult3) {
+									resultSet3.forEachResult(function (searchResult3) {
 
 										var job_id = searchResult3.getValue('internalid');
 										var job_group_id = searchResult3.getValue('custrecord_job_group');
@@ -619,7 +620,7 @@ function main(type) {
 
 									nlapiLogExecution('DEBUG', 'End of creating Job Group ID/Status Array', ctx.getRemainingUsage());
 
-									result_service_ids = result_service_ids.filter(function(elem, index, self) {
+									result_service_ids = result_service_ids.filter(function (elem, index, self) {
 										return index == self.indexOf(elem);
 									});
 
@@ -630,13 +631,13 @@ function main(type) {
 										for (var i = 0; i < job_group_ids_array.length; i++) {
 											unique[i] = [];
 
-											unique[i] = job_group_ids_array[i].filter(function(elem, index, self) {
+											unique[i] = job_group_ids_array[i].filter(function (elem, index, self) {
 												return index == self.indexOf(elem);
 											});
 										}
 
 
-										var shortest = unique.reduce(function(p, c) {
+										var shortest = unique.reduce(function (p, c) {
 											return p.length > c.length ? c : p;
 										}, {
 											length: Infinity
@@ -657,7 +658,7 @@ function main(type) {
 													final_invoiceable = getPackageInvoiceable(final_invoiceable, status, invoiceable);
 												}
 
-												job_groups_list.sort(function(a, b) {
+												job_groups_list.sort(function (a, b) {
 													return a - b
 												});
 
@@ -701,7 +702,7 @@ function main(type) {
 															return false;
 														}
 													} else {
-														resultSet4.forEachResult(function(searchResult4) {
+														resultSet4.forEachResult(function (searchResult4) {
 
 
 															var startUsageAllocator = ctx.getRemainingUsage();
@@ -743,7 +744,7 @@ function main(type) {
 												final_invoiceable = getPackageInvoiceable(final_invoiceable, status, invoiceable);
 											}
 
-											job_groups_list.sort(function(a, b) {
+											job_groups_list.sort(function (a, b) {
 												return a - b
 											});
 
@@ -789,7 +790,7 @@ function main(type) {
 														return false;
 													}
 												} else {
-													resultSet4.forEachResult(function(searchResult4) {
+													resultSet4.forEachResult(function (searchResult4) {
 
 
 														var startUsageAllocator = ctx.getRemainingUsage();
@@ -886,7 +887,7 @@ function main(type) {
 
 							var resultSet2 = searched_jobs2.runSearch();
 
-							resultSet2.forEachResult(function(searchResult2) {
+							resultSet2.forEachResult(function (searchResult2) {
 
 								var usageStartMonthly = ctx.getRemainingUsage();
 
@@ -962,7 +963,7 @@ function main(type) {
 
 					nlapiLogExecution('DEBUG', 'Start of Assigning Date Allocated Loop for Customer: ' + customer_text, ctx.getRemainingUsage());
 
-					resultSet2.forEachResult(function(searchResult2) {
+					resultSet2.forEachResult(function (searchResult2) {
 
 						var usageStartPerDay = ctx.getRemainingUsage();
 

@@ -31,6 +31,7 @@ nlapiLogExecution('DEBUG', 'zee', zee);
  * @param  {String} request  when the page is loaded
  * @param  {String} response when the page is submitted
  */
+
 function services_main_page(request, response) {
 
     if (request.getMethod() == "GET") {
@@ -103,7 +104,7 @@ function services_main_page(request, response) {
 
             var resultSet = searched_services.runSearch();
 
-            resultSet.forEachResult(function(searchResult) {
+            resultSet.forEachResult(function (searchResult) {
                 admin_fees_service_id = searchResult.getValue('internalid');
                 customer_admin_fees = parseFloat(searchResult.getValue('custrecord_service_price'));
                 return true;
@@ -327,7 +328,7 @@ function services_main_page(request, response) {
 
             //PACKAGE SECTION
 
-            resultSet.forEachResult(function(searchResult) {
+            resultSet.forEachResult(function (searchResult) {
 
                 //GETTING THE DETAILS FROM THE JOB INVOICING MAIN PAGE SEARCH
                 var customer_internal_id = searchResult.getValue('internalid', 'CUSTRECORD_JOB_CUSTOMER', 'group');
@@ -1209,7 +1210,7 @@ function services_main_page(request, response) {
 
             //SERVICES SECTION
 
-            resultSet.forEachResult(function(searchResult) {
+            resultSet.forEachResult(function (searchResult) {
 
                 //GET DETAILS FROM THE JOB INVOICING MAIN PAGE SEARCH
                 var customer_internal_id = searchResult.getValue('internalid', 'CUSTRECORD_JOB_CUSTOMER', 'group');
@@ -1668,7 +1669,7 @@ function services_main_page(request, response) {
 
 
         //EXTRAS SECTION 
-        resultSet_extras.forEachResult(function(searchResult_extras) {
+        resultSet_extras.forEachResult(function (searchResult_extras) {
 
             //GET THE DETAILS FROM THE JOB INVOICING MAIN PAGE
             var service_id = searchResult_extras.getValue('custrecord_job_service', null, 'group');
@@ -2059,7 +2060,7 @@ function services_main_page(request, response) {
 
                 } else {
                     if (packageResult.length == 1) {
-                        resultSet_extras.forEachResult(function(searchResult_extras) {
+                        resultSet_extras.forEachResult(function (searchResult_extras) {
                             var job_record = nlapiLoadRecord('customrecord_job', searchResult_extras.getValue('internalid'));
                             job_record.setFieldValue('custrecord_job_extras_qty', extra_qty[i]);
                             job_record.setFieldValue('custrecord_job_status', 3);
