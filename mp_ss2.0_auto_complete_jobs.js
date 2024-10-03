@@ -8,99 +8,146 @@
  * @Last modified time: 2022-05-06T09:19:56+10:00
  */
 
+define([
+	"N/task",
+	"N/email",
+	"N/runtime",
+	"N/search",
+	"N/record",
+	"N/format",
+	"N/https",
+], function (task, email, runtime, search, record, format, https) {
+	var main_JSON = "";
 
-define(['N/task', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/format',
-		'N/https'
-	],
-	function(task, email, runtime, search, record, format, https) {
+	function execute(context) {
+		var todayDateTime = new Date();
 
+		log.audit({
+			title: "todayDateTime",
+			details: todayDateTime,
+		});
 
-		var main_JSON = '';
+		//To get todays date
+		todayDateTime = format.format({
+			value: todayDateTime,
+			type: format.Type.DATETIME,
+			timezone: format.Timezone.AUSTRALIA_SYDNEY,
+		});
 
-		function execute(context) {
+		log.audit({
+			title: "todayDateTime",
+			details: todayDateTime,
+		});
 
-			var todayDateTime = new Date();
+		var todaysDate = todayDateTime.split(" ")[0];
 
-			log.audit({
-				title: 'todayDateTime',
-				details: todayDateTime
-			});
+		log.audit({
+			title: "todaysDate",
+			details: todaysDate,
+		});
 
-			//To get todays date
-			todayDateTime = format.format({
-				value: todayDateTime,
-				type: format.Type.DATETIME,
-				timezone: format.Timezone.AUSTRALIA_SYDNEY
-			});
+		var oldAppJobID = null;
+		var oldJobGroupID = null;
+		var count = 0;
+		var todayIsPublicHolidayCount = 0;
 
-			var oldAppJobID = null;
-			var oldJobGroupID = null;
-			var count = 0;
+		//NetSuite Search: AIC - Todays Scheduled & Partial App Jobs
+		var searchJobsScheduledPartial = search.load({
+			id: "customsearch_rta_today_app_jobs_4",
+			type: "customrecord_job",
+		});
 
-			//NetSuite Search: AIC - Todays Scheduled & Partial App Jobs
-			var searchJobsScheduledPartial = search.load({
-				id: 'customsearch_rta_today_app_jobs_4',
-				type: 'customrecord_job'
-			});
-
-
-			searchJobsScheduledPartial.run().each(function(
-				searchJobsScheduledPartialResultSet) {
-
+		searchJobsScheduledPartial
+			.run()
+			.each(function (searchJobsScheduledPartialResultSet) {
 				var jobInternalID = searchJobsScheduledPartialResultSet.getValue({
-					name: 'internalid'
+					name: "internalid",
 				});
 
 				var jobGroupInternalID = searchJobsScheduledPartialResultSet.getValue({
 					name: "internalid",
-					join: "CUSTRECORD_JOB_GROUP"
+					join: "CUSTRECORD_JOB_GROUP",
+				});
+				var jobFranchiseeState = searchJobsScheduledPartialResultSet.getValue({
+					name: "location",
+					join: "CUSTRECORD_JOB_FRANCHISEE",
 				});
 
+				log.debug({
+					title: "jobFranchiseeState",
+					details: jobFranchiseeState,
+				});
+
+				//NetSuite Search: Australia Public Holidays - Dates Search
+				var australiaPublicHolidayDatesRecordSearch = search.load({
+					id: "customsearch_aus_public_holiday_dates",
+					type: "customrecord_aus_public_holidays_dates",
+				});
+
+				australiaPublicHolidayDatesRecordSearch.filters.push(
+					search.createFilter({
+						name: "custrecord_public_holidays_state",
+						join: "CUSTRECORD_AUS_PUBLIC_HOLIDAY_RECORD",
+						operator: search.Operator.ANYOF,
+						values: jobFranchiseeState,
+					})
+				);
+
+				todayIsPublicHolidayCount =
+					australiaPublicHolidayDatesRecordSearch.runPaged().count;
+
+				log.debug({
+					title: "todayIsPublicHolidayCount",
+					details: todayIsPublicHolidayCount,
+				});
 
 				if (count > 0 && oldAppJobID != jobInternalID) {
-					var appJobGroupRecord = record.load({
-						type: 'customrecord_jobgroup',
-						id: oldJobGroupID
-					});
-					appJobGroupRecord.setValue({
-						fieldId: 'custrecord_jobgroup_status',
-						value: 1
-					});
-					appJobGroupRecord.save();
+					if (todayIsPublicHolidayCount == 0) {
+						var appJobGroupRecord = record.load({
+							type: "customrecord_jobgroup",
+							id: oldJobGroupID,
+						});
+						appJobGroupRecord.setValue({
+							fieldId: "custrecord_jobgroup_status",
+							value: 1,
+						});
+						appJobGroupRecord.save();
+					}
 
 					// reschedule = rescheduleScript(prev_inv_deploy, adhoc_inv_deploy, null);
 					var scriptTask = task.create({
 						taskType: task.TaskType.SCHEDULED_SCRIPT,
-						scriptId: 'customscript_ss2_auto_complete_jobs',
-						deploymentId: 'customdeploy2',
-						params: null
+						scriptId: "customscript_ss2_auto_complete_jobs",
+						deploymentId: "customdeploy2",
+						params: null,
 					});
 					var scriptTaskId = scriptTask.submit();
 
 					return false;
-
 				}
 
-				var appJobRecord = record.load({
-					type: 'customrecord_job',
-					id: jobInternalID
-				});
-				var timeScheduled = appJobRecord.getValue({
-					fieldId: 'custrecord_job_time_scheduled'
-				});
-				appJobRecord.setValue({
-					fieldId: 'custrecord_job_date_finalised',
-					value: getDateToday()
-				});
-				appJobRecord.setValue({
-					fieldId: 'custrecord_job_time_finalised',
-					value: timeScheduled
-				});
-				appJobRecord.setValue({
-					fieldId: 'custrecord_job_status',
-					value: 3
-				});
-				appJobRecord.save();
+				if (todayIsPublicHolidayCount == 0) {
+					var appJobRecord = record.load({
+						type: "customrecord_job",
+						id: jobInternalID,
+					});
+					var timeScheduled = appJobRecord.getValue({
+						fieldId: "custrecord_job_time_scheduled",
+					});
+					appJobRecord.setValue({
+						fieldId: "custrecord_job_date_finalised",
+						value: getDateToday(),
+					});
+					appJobRecord.setValue({
+						fieldId: "custrecord_job_time_finalised",
+						value: timeScheduled,
+					});
+					appJobRecord.setValue({
+						fieldId: "custrecord_job_status",
+						value: 3,
+					});
+					appJobRecord.save();
+				}
 
 				count++;
 				oldAppJobID = jobInternalID;
@@ -108,36 +155,36 @@ define(['N/task', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/format',
 				return true;
 			});
 
-			if (count > 0) {
+		if (count > 0) {
+			if (todayIsPublicHolidayCount == 0) {
 				var appJobGroupRecord = record.load({
-					type: 'customrecord_jobgroup',
-					id: oldJobGroupID
+					type: "customrecord_jobgroup",
+					id: oldJobGroupID,
 				});
 				appJobGroupRecord.setValue({
-					fieldId: 'custrecord_jobgroup_status',
-					value: 1
+					fieldId: "custrecord_jobgroup_status",
+					value: 1,
 				});
 				appJobGroupRecord.save();
 			}
-
 		}
-
-		function getDateToday() {
-			var date = new Date();
-			format.format({
-				value: date,
-				type: format.Type.DATE,
-				timezone: format.Timezone.AUSTRALIA_SYDNEY
-			})
-
-			return date;
-		}
-
-		return {
-			execute: execute
-		};
 	}
-);
+
+	function getDateToday() {
+		var date = new Date();
+		format.format({
+			value: date,
+			type: format.Type.DATE,
+			timezone: format.Timezone.AUSTRALIA_SYDNEY,
+		});
+
+		return date;
+	}
+
+	return {
+		execute: execute,
+	};
+});
 
 /**
  * Is Null or Empty.
@@ -145,6 +192,12 @@ define(['N/task', 'N/email', 'N/runtime', 'N/search', 'N/record', 'N/format',
  * @param {Object} strVal
  */
 function isNullorEmpty(strVal) {
-	return (strVal == null || strVal == '' || strVal == 'null' || strVal ==
-		undefined || strVal == 'undefined' || strVal == '- None -');
+	return (
+		strVal == null ||
+		strVal == "" ||
+		strVal == "null" ||
+		strVal == undefined ||
+		strVal == "undefined" ||
+		strVal == "- None -"
+	);
 }
