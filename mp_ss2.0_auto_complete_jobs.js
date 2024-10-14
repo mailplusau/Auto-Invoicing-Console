@@ -79,22 +79,22 @@ define([
 				});
 
 				//NetSuite Search: Australia Public Holidays - Dates Search
-				var australiaPublicHolidayDatesRecordSearch = search.load({
-					id: "customsearch_aus_public_holiday_dates",
-					type: "customrecord_aus_public_holidays_dates",
-				});
+				// var australiaPublicHolidayDatesRecordSearch = search.load({
+				// 	id: "customsearch_aus_public_holiday_dates",
+				// 	type: "customrecord_aus_public_holidays_dates",
+				// });
 
-				australiaPublicHolidayDatesRecordSearch.filters.push(
-					search.createFilter({
-						name: "custrecord_public_holidays_state",
-						join: "CUSTRECORD_AUS_PUBLIC_HOLIDAY_RECORD",
-						operator: search.Operator.ANYOF,
-						values: jobFranchiseeState,
-					})
-				);
+				// australiaPublicHolidayDatesRecordSearch.filters.push(
+				// 	search.createFilter({
+				// 		name: "custrecord_public_holidays_state",
+				// 		join: "CUSTRECORD_AUS_PUBLIC_HOLIDAY_RECORD",
+				// 		operator: search.Operator.ANYOF,
+				// 		values: jobFranchiseeState,
+				// 	})
+				// );
 
-				todayIsPublicHolidayCount =
-					australiaPublicHolidayDatesRecordSearch.runPaged().count;
+				// todayIsPublicHolidayCount =
+				// 	australiaPublicHolidayDatesRecordSearch.runPaged().count;
 
 				log.debug({
 					title: "todayIsPublicHolidayCount",
