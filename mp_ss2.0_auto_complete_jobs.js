@@ -102,7 +102,12 @@ define([
 				});
 
 				if (count > 0 && oldAppJobID != jobInternalID) {
-					if (todayIsPublicHolidayCount == 0) {
+					// if (todayIsPublicHolidayCount == 0) {
+						log.debug({
+							title: "Updating Job Group Internal ID",
+							details: oldJobGroupID,
+						});
+
 						var appJobGroupRecord = record.load({
 							type: "customrecord_jobgroup",
 							id: oldJobGroupID,
@@ -112,7 +117,7 @@ define([
 							value: 1,
 						});
 						appJobGroupRecord.save();
-					}
+					// }
 
 					// reschedule = rescheduleScript(prev_inv_deploy, adhoc_inv_deploy, null);
 					var scriptTask = task.create({
@@ -126,28 +131,34 @@ define([
 					return false;
 				}
 
-				if (todayIsPublicHolidayCount == 0) {
-					var appJobRecord = record.load({
-						type: "customrecord_job",
-						id: jobInternalID,
-					});
-					var timeScheduled = appJobRecord.getValue({
-						fieldId: "custrecord_job_time_scheduled",
-					});
-					appJobRecord.setValue({
-						fieldId: "custrecord_job_date_finalised",
-						value: getDateToday(),
-					});
-					appJobRecord.setValue({
-						fieldId: "custrecord_job_time_finalised",
-						value: timeScheduled,
-					});
-					appJobRecord.setValue({
-						fieldId: "custrecord_job_status",
-						value: 3,
-					});
-					appJobRecord.save();
-				}
+				// if (todayIsPublicHolidayCount == 0) {
+
+				log.debug({
+					title: "Updating App Job Internal ID",
+					details: jobInternalID,
+				});
+
+				var appJobRecord = record.load({
+					type: "customrecord_job",
+					id: jobInternalID,
+				});
+				var timeScheduled = appJobRecord.getValue({
+					fieldId: "custrecord_job_time_scheduled",
+				});
+				appJobRecord.setValue({
+					fieldId: "custrecord_job_date_finalised",
+					value: getDateToday(),
+				});
+				appJobRecord.setValue({
+					fieldId: "custrecord_job_time_finalised",
+					value: timeScheduled,
+				});
+				appJobRecord.setValue({
+					fieldId: "custrecord_job_status",
+					value: 3,
+				});
+				appJobRecord.save();
+				// }
 
 				count++;
 				oldAppJobID = jobInternalID;
@@ -156,17 +167,23 @@ define([
 			});
 
 		if (count > 0) {
-			if (todayIsPublicHolidayCount == 0) {
-				var appJobGroupRecord = record.load({
-					type: "customrecord_jobgroup",
-					id: oldJobGroupID,
-				});
-				appJobGroupRecord.setValue({
-					fieldId: "custrecord_jobgroup_status",
-					value: 1,
-				});
-				appJobGroupRecord.save();
-			}
+			// if (todayIsPublicHolidayCount == 0) {
+
+			log.debug({
+				title: "Updating Job Group Internal ID",
+				details: oldJobGroupID,
+			});
+
+			var appJobGroupRecord = record.load({
+				type: "customrecord_jobgroup",
+				id: oldJobGroupID,
+			});
+			appJobGroupRecord.setValue({
+				fieldId: "custrecord_jobgroup_status",
+				value: 1,
+			});
+			appJobGroupRecord.save();
+			// }
 		}
 	}
 
