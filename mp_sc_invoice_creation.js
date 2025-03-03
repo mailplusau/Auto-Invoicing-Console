@@ -88,11 +88,11 @@ function invoiceCreation() {
 			nlapiLogExecution(
 				"DEBUG",
 				"START ---> Customer" +
-					searchResult_summary.getText(
-						"custrecord_job_customer",
-						null,
-						"group"
-					),
+				searchResult_summary.getText(
+					"custrecord_job_customer",
+					null,
+					"group"
+				),
 				ctx.getRemainingUsage()
 			);
 
@@ -350,15 +350,15 @@ function invoiceCreation() {
 								nlapiLoadRecord("partner", franchisee).getFieldValue("location")
 							);
 							// recInvoice.setFieldValue('trandate', invoice_date());
-							recInvoice.setFieldValue("trandate", "31/01/2025");
+							recInvoice.setFieldValue("trandate", "28/02/2025");
 							recInvoice.setFieldValue("custbody_dont_update_trandate", "T");
 							recInvoice.setFieldValue(
 								"custbody_inv_date_range_from",
-								"1/1/2025"
+								"1/2/2025"
 							);
 							recInvoice.setFieldValue(
 								"custbody_inv_date_range_to",
-								"31/1/2025"
+								"28/2/2025"
 							);
 
 							recInvoice.setFieldValue("partner", franchisee);
@@ -987,12 +987,12 @@ function invoiceCreation() {
 									nlapiLogExecution(
 										"AUDIT",
 										"Cust #: " +
-											count_loop_cust +
-											" | Cust ID: " +
-											customer_internal_id +
-											" | INV ID: " +
-											invoiceId +
-											".",
+										count_loop_cust +
+										" | Cust ID: " +
+										customer_internal_id +
+										" | INV ID: " +
+										invoiceId +
+										".",
 										usage_loopstart_cust - ctx.getRemainingUsage()
 									);
 
@@ -1004,12 +1004,12 @@ function invoiceCreation() {
 									nlapiLogExecution(
 										"AUDIT",
 										"Cust #: " +
-											count_loop_cust +
-											" | Cust ID: " +
-											customer_internal_id +
-											" | INV id: " +
-											invoiceId +
-											".",
+										count_loop_cust +
+										" | Cust ID: " +
+										customer_internal_id +
+										" | INV id: " +
+										invoiceId +
+										".",
 										usage_loopstart_cust - ctx.getRemainingUsage()
 									);
 								} else if (global_inv_line_count == 0 && count == 0) {
@@ -1065,8 +1065,8 @@ function invoiceCreation() {
 								"willian.suryadharma@mailplus.com.au",
 							],
 							"Invoice Creation - Customer: " +
-								customer_internal_id +
-								" cannot be Invoiced",
+							customer_internal_id +
+							" cannot be Invoiced",
 							body,
 							null
 						);
@@ -1099,8 +1099,8 @@ function invoiceCreation() {
 							"willian.suryadharma@mailplus.com.au",
 						],
 						"Invoice Creation - Customer: " +
-							customer_internal_id +
-							" cannot create Invoice",
+						customer_internal_id +
+						" cannot create Invoice",
 						message,
 						null
 					);
@@ -1371,8 +1371,8 @@ function updateJobs(
 								"willian.suryadharma@mailplus.com.au",
 							],
 							"Invoice Creation - Customer: " +
-								customer_internal_id +
-								" cannot update Job",
+							customer_internal_id +
+							" cannot update Job",
 							body,
 							null
 						);
@@ -1411,8 +1411,8 @@ function updateJobs(
 						"willian.suryadharma@mailplus.com.au",
 					],
 					"Invoice Creation - Customer: " +
-						customer_internal_id +
-						" cannot update Job",
+					customer_internal_id +
+					" cannot update Job",
 					body,
 					null
 				);
@@ -1452,8 +1452,8 @@ function updateJobs(
 					"willian.suryadharma@mailplus.com.au",
 				],
 				"Invoice Creation - Customer: " +
-					customer_internal_id +
-					" cannot update Job",
+				customer_internal_id +
+				" cannot update Job",
 				message,
 				null
 			);
